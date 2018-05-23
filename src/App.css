@@ -1,5 +1,12 @@
+html, body{
+  height:100vh;
+}
+*{
+  box-sizing: border-box;
+}
 .App {
   text-align: center;
+  width:100%;
 }
 
 .App-logo {
@@ -23,6 +30,46 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.app-container {
+  width: 100%;
+  height: calc(100vh - 150px);
+  display: flex;
+}
+
+.sidebar {
+  height: 100%;
+  width: 15%;
+  float: left;
+  background-color: #111;
+  padding: 20px 10px;
+}
+
+.sidebar ol {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 5px 0;
+  color: #aaa;
+}
+
+.sidebar li:hover {
+  color: #0df;
+}
+
+.sidebar-filter {
+  width: 100%;
+}
+
+#locations-filter {
+  height: 30px;
+  width: 100%;
+  border-radius: 5px;
 }
