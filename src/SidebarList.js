@@ -10,16 +10,17 @@ class SidebarList extends Component {
   * #return string
   */
   generateKey = (loc) =>{
-    let key = (loc.coord.lat.toString() + loc.coord.long.toString()).replace(/\./g,"");
+    let key = (loc.coord.lat.toString() + loc.coord.lng.toString()).replace(/\./g,"");
     return key;
   }
 
   render() {
+    const {locations} = this.props;
     return (
       <div className="sidebar-list">
         <ul>
-        {this.props.locations.map(location => (
-            <li key={this.generateKey(location)}>{location.name}</li>))}
+        {locations.map(loc => (
+            <li key={this.generateKey(loc)}>{loc.name}</li>))}
         </ul>
       </div>
     );

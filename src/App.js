@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Sidebar from "./Sidebar.js";
+import Map from "./Map.js";
 import locations from "./locations.js";
 
 class App extends Component {
@@ -10,11 +11,12 @@ class App extends Component {
     locations: []
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.setState ({locations});
   }
 
   render() {
+    const {locations} = this.state;
     return (
       <div>
         <div className="App">
@@ -24,7 +26,8 @@ class App extends Component {
           </header>
         </div>
         <div className="app-container">
-          <Sidebar locations = {this.state.locations} />
+          <Sidebar locations = {locations} />
+          <Map locations = {locations}/>
         </div>
       </div>
     );

@@ -1,205 +1,242 @@
 let locations = [{
     name: "Thalia Concert Hall",
     coord: {
-        lat: 45.7943719,
-        long: 24.1533591
-    }
+        lat: 45.794361,
+        lng: 24.153760
+     },
+    matter: "Culture"
 },
 {
     name: "Radu Stanca National Theatre",
     coord: {
-        lat: 45.791741, 
-        long: 24.149355
-    }
+        lat: 45.791282,
+        lng: 24.149352
+    },
+    matter: "Culture"
 },
 {
     name: "Tineretului Park",
     coord: {
         lat: 45.796465,
-        long: 24.157892
-    }
+        lng: 24.157892
+    },
+    matter: "Park"
 },
 {
     name: "Benjamin Steakhouse & Bar",
     coord: {
         lat: 45.795488,
-        long: 24.149848
-    }
+        lng: 24.149848
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Music Pub",
     coord: {
         lat: 45.798583, 
-        long: 24.151797
-    }
+        lng: 24.151797
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Cafe Wien",
     coord: {
         lat: 45.797641,
-        long: 24.149529
-    }
+        lng: 24.149529
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Brukenthal Museum",
     coord: {
         lat: 45.796445,
-        long: 24.150546
-    }
+        lng: 24.150546
+    },
+    matter: "Culture"
 },
 {
     name: "Continental Forum Sibiu",
     coord: {
         lat: 45.792252, 
-        long: 24.147923
-    }
+        lng: 24.147923
+    },
+    matter: "Accommodation"
 },
 {
     name: "Casa Frieda",
     coord: {
         lat: 45.793300, 
-        long: 24.149205
-    }
+        lng: 24.149205
+    },
+    matter: "Accommodation"
 },
 {
     name: "Cotton Pub",
     coord: {
         lat: 45.791619,
-        long: 24.142890
-    }
+        lng: 24.142890
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Cetatea Medievala",
     coord: {
         lat: 45.795983, 
-        long: 24.147910
-    }
+        lng: 24.147910
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Mai Lounge Caffe",
     coord: {
         lat: 45.786859, 
-        long: 24.140639
-    }
+        lng: 24.140639
+    },
+    matter: "Food & Drink"
 },
 {
     name: "New York American Restaurant",
     coord: {
         lat: 45.788978, 
-        long: 24.144787
-    }
+        lng: 24.144787
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Ramada Sibiu",
     coord: {
         lat: 45.790876, 
-        long: 24.147815
-    }
+        lng: 24.147815
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Grădina Restaurant Sibiu",
     coord: {
         lat: 45.788664, 
-        long: 24.142507
-    }
+        lng: 24.142507
+    },
+    matter: "Food & Drink"
 },
 {
     name: "Dumbrava Sibiului Natural Park",
     coord: {
         lat: 45.749604, 
-        long: 24.108468
-    }
+        lng: 24.108468
+    },
+    matter: "Park"
 },
 {
     name: "Hilton Sibiu",
     coord: {
         lat: 45.760516, 
-        long: 24.126875
-    }
+        lng: 24.126875
+    },
+    matter: "Accommodation"
 },
 {
     name: "Hotel Libra",
     coord: {
         lat: 45.801470, 
-        long: 24.168815
-    }
+        lng: 24.168815
+    },
+    matter: "Accommodation"
 },
 {
     name: "Liquid The Club",
     coord: {
         lat: 45.787803, 
-        long: 24.148018
-    }
+        lng: 24.148018
+    },
+    matter: "Nightlife"
 },
 {
     name: "Hard Rock Caffe",
     coord: {
         lat: 45.798950, 
-        long: 24.156992
-    }
+        lng: 24.156992
+    },
+    matter: "Nightlife"
 },
 {
     name: "N'Bike Rock Club",
     coord: {
         lat: 45.788977, 
-        long: 24.173980
-    }
+        lng: 24.173980
+    },
+    matter: "Nightlife"
 },
 {
     name: "Troubadour Club",
     coord: {
         lat: 45.790040, 
-        long: 24.147462
-    }
+        lng: 24.147462
+    },
+    matter: "Nightlife"
 },
 {
     name: "Sub Arini Park",
     coord: {
         lat: 45.782414,
-        long: 24.139571
-    }
+        lng: 24.139571
+    },
+    matter: "Park"
 },
 {
     name: "The Thick Tower",
     coord: {
         lat: 45.794119,
-        long: 24.154034
-    }
+        lng: 24.154034
+    },
+    matter: "History"
 },
 {
     name: "Barbers Tower",
     coord: {
         lat: 45.798017,
-        long: 24.156186
-    }
+        lng: 24.156186
+    },
+    matter: "History"
 },
 {
     name: "Tanners Tower",
     coord: {
         lat: 45.800728, 
-        long: 24.147386
-    }
+        lng: 24.147386
+    },
+    matter: "History"
 },
 {
     name: "Powdery Tower",
     coord: {
         lat: 45.801913,
-        long: 24.149630
-    }
+        lng: 24.149630
+    },
+    matter: "History"
 },
 {
     name: "Altemberger House",
     coord: {
         lat: 45.796979,
-        long: 24.149452
-    }
+        lng: 24.149452
+    },
+    matter: "History"
 },
 {
     name: "The Council Tower",
     coord: {
         lat: 45.797629,
-        long: 24.152133
-    }
+        lng: 24.152133
+    },
+    matter: "History"
+},
+{
+    name: "Harquebusiers Tower",
+    coord: {
+        lat: 45.793243, 
+        lng: 24.151237
+    },
+    matter: "History"
 },
 ]
 
