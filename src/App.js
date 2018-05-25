@@ -35,7 +35,7 @@ class App extends Component {
 
   /*
   * @desc change the state.filter value based on the chosen filter option in Sidebar
-  * @param string - the selected option 'value' in Sidebar filter options
+  * @param string - the selected option 'value' in filter options
   */
   setFilter = filter => {
     this.setState({ filter });

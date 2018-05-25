@@ -23,7 +23,7 @@ class SidebarFilter extends Component {
           <option value="all">All locations</option>
           <option value="accommodation">Accommodation</option>
           <option value="food & drink">Food & Drink</option>
-          <option value="culture">Culture</option>
+          <option value="art">Art</option>
           <option value="history">History</option>
           <option value="nightlife">Nightlife</option>
           <option value="park">Parks</option>

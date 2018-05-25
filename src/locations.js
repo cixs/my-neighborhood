@@ -4,7 +4,7 @@ let locations = [{
         lat: 45.794361,
         lng: 24.153760
      },
-    matter: "culture"
+    matter: "art"
 },
 {
     name: "Radu Stanca National Theatre",
@@ -12,7 +12,7 @@ let locations = [{
         lat: 45.791282,
         lng: 24.149352
     },
-    matter: "culture"
+    matter: "art"
 },
 {
     name: "Tineretului Park",
@@ -52,7 +52,7 @@ let locations = [{
         lat: 45.796445,
         lng: 24.150546
     },
-    matter: "culture"
+    matter: "art"
 },
 {
     name: "Continental Forum Sibiu",

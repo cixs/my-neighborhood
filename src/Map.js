@@ -1,6 +1,23 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+/*
+  * from https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
+  * @desc import all images from a specific directory
+  * @param r - require context
+  * @return - images array
+  */
+function importAll(r) {
+  // markers icon pack from https://templatic.com/directory-resources/
+  let images = {};
+  r.keys().map((item, index) => {
+    images[item.replace("./", "")] = r(item);
+    return images[item];
+  });
+  return images;
+}
+const images = importAll(require.context("./markers", false, /\.(png)$/));
+
 class Map extends Component {
   state = {
     markers: [],
@@ -24,10 +41,33 @@ class Map extends Component {
     });
     return map;
   };
+  /*
+  * @desc find the icon to be seted on a marker depending of its location
+  * @return - image object, an item in the images array
+  */
+  iconToSet = location => {
+    let image;
 
+    if (location.matter === "accommodation") {
+      image = images["hotels.png"];
+    } else if (location.matter === "food & drink") {
+      image = images["food.png"];
+    } else if (location.matter === "art") {
+      image = images["concerts.png"];
+    } else if (location.matter === "history") {
+      image = images["museums.png"];
+    } else if (location.matter === "nightlife") {
+      image = images["dance-clubs.png"];
+    } else if (location.matter === "park") {
+      image = images["parks.png"];
+    } else {
+      image = images["marker.png"];
+    }
+    return image;
+  };
   /*
   * @desc create the array of markers,
-  * @params map - google Map object, locations - array of locations
+  * @params map - google Map object
   * @return array
   */
   createMarkers = map => {
@@ -40,39 +80,59 @@ class Map extends Component {
         let marker = new google.maps.Marker({
           position: location.coord,
           map: map,
-          title: location.name
+          title: location.name,
+          icon: this.iconToSet(location)
         });
         marker.index = index;
         marker.addListener("click", function() {
-            setActiveLocation(marker.getAnimation()? -1 : marker.index);
+          setActiveLocation(marker.getAnimation() ? -1 : marker.index);
         });
         markers.push(marker);
       }
     });
     return markers;
   };
+
   /*
-  * @desc filter the array of markers by hidding/showing them on the map based on filter criteria,
+  * @desc show markers by hidding/showing them on the map based on filter criteria,
   *       show the active location by setting animation on the corresponding marker
   */
-  filterMarkers = () => {
+  updateMarkers = (prevLocation, prevFilter) => {
     const { map, markers } = this.state;
     const { locations, filter, activeLocation } = this.props;
     const google = window.google;
 
-    for (let i = 0; i < locations.length; i++) {
-      if (filter === "all" || filter === locations[i].matter) {
-        if (!markers[i].getMap()) {
-          markers[i].setMap(map);
-        }
-      } else {
-        if (markers[i].getMap()) {
-          markers[i].setMap(null);
+    // if the locations filter was changed
+    // hide/show markers
+    if (filter !== prevFilter) {
+      for (let i = 0; i < locations.length; i++) {
+        if (filter === "all" || filter === locations[i].matter) {
+          if (!markers[i].getMap()) {
+            markers[i].setMap(map);
+            // if the marker is active and it was previously hidden
+            // when is set to be visible re-establish the animation
+            if (i === activeLocation) {
+              markers[i].setAnimation(google.maps.Animation.BOUNCE);
+            }
+          }
+        } else {
+          if (markers[i].getMap()) {
+            markers[i].setMap(null);
+          }
         }
       }
-      markers[i].setAnimation(
-        activeLocation === i ? google.maps.Animation.BOUNCE : null
-      );
+    }
+
+    // if the active location was changed
+    // set/remove animation on markers
+    if (activeLocation !== prevLocation) {
+      if (prevLocation > -1) {
+        let animated = markers[prevLocation].getAnimation();
+        if (animated) markers[prevLocation].setAnimation(null);
+      }
+      if (activeLocation > -1) {
+        markers[activeLocation].setAnimation(google.maps.Animation.BOUNCE);
+      }
     }
   };
 
@@ -82,9 +142,15 @@ class Map extends Component {
     this.setState({ map: map, markers: markers });
   }
 
-  componentDidUpdate() {
-    this.filterMarkers();
+  componentDidUpdate(prevProps, prevState) {
+    // because render function is called first time and once before componentDidMount
+    // call of updateMarkers inside render() will produce an' undefined variable' (google) error
+    // this is why updateMarkers is called here
+    const prevLocation = prevProps.activeLocation;
+    const prevFilter = prevProps.filter;
+    this.updateMarkers(prevLocation, prevFilter);
   }
+
   render() {
     return <div id="map" role="application" aria-label="locations on map" />;
   }
