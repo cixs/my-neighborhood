@@ -5,12 +5,11 @@ import Sidebar from "./Sidebar.js";
 import Map from "./Map.js";
 import locations from "./locations.js";
 
-
 class App extends Component {
   state = {
     locations: [],
-    markers: [],
-    filter: "all"
+    filter: "all",
+    activeLocation: -1
   };
 
   /*
@@ -41,9 +40,17 @@ class App extends Component {
   setFilter = filter => {
     this.setState({ filter });
   };
+  /*
+  * @desc change the state.filter value based on the chosen filter option in Sidebar
+  * @param string - the selected option 'value' in Sidebar filter options
+  */
+  setActiveLocation = index => {
+    const activeLocation = this.state.activeLocation;
+    this.setState({ activeLocation: activeLocation === index? -1 : index });
+  };
 
   render() {
-    const{locations, filter} = this.state;
+    const { locations, filter, activeLocation } = this.state;
     return (
       <div>
         <div className="App">
@@ -53,8 +60,19 @@ class App extends Component {
           </header>
         </div>
         <div className="app-container">
-          <Sidebar locations={locations} filter={filter} setFilter = {this.setFilter} />
-          <Map locations={locations} filter={filter}/>
+          <Sidebar
+            locations={locations}
+            filter={filter}
+            setFilter={this.setFilter}
+            activeLocation={activeLocation}
+            setActiveLocation={this.setActiveLocation}
+          />
+          <Map
+            locations={locations}
+            filter={filter}
+            activeLocation={activeLocation}
+            setActiveLocation={this.setActiveLocation}
+          />
         </div>
       </div>
     );

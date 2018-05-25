@@ -30,25 +30,21 @@ class Map extends Component {
   * @params map - google Map object, locations - array of locations
   * @return array
   */
-  createMarkers = (map, locations) => {
+  createMarkers = map => {
     let markers = [];
-    const filter = this.props.filter;
+    const { locations, filter, setActiveLocation } = this.props;
     const google = window.google;
 
-    this.props.locations.forEach(location => {
+    locations.forEach((location, index) => {
       if (filter === "all" || filter === location.matter) {
         let marker = new google.maps.Marker({
           position: location.coord,
           map: map,
           title: location.name
         });
-
+        marker.index = index;
         marker.addListener("click", function() {
-          if (marker.getAnimation() !== null) {
-            marker.setAnimation(null);
-          } else {
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-          }
+            setActiveLocation(marker.getAnimation()? -1 : marker.index);
         });
         markers.push(marker);
       }
@@ -56,22 +52,33 @@ class Map extends Component {
     return markers;
   };
   /*
-  * @desc filter the array of markers by hidding/showing them on the map  based on filter criteria,
+  * @desc filter the array of markers by hidding/showing them on the map based on filter criteria,
+  *       show the active location by setting animation on the corresponding marker
   */
   filterMarkers = () => {
     const { map, markers } = this.state;
-    const { locations, filter } = this.props;
+    const { locations, filter, activeLocation } = this.props;
+    const google = window.google;
 
     for (let i = 0; i < locations.length; i++) {
-      if (filter === "all" || filter === locations[i].matter)
-        markers[i].setMap(map);
-      else markers[i].setMap(null);
+      if (filter === "all" || filter === locations[i].matter) {
+        if (!markers[i].getMap()) {
+          markers[i].setMap(map);
+        }
+      } else {
+        if (markers[i].getMap()) {
+          markers[i].setMap(null);
+        }
+      }
+      markers[i].setAnimation(
+        activeLocation === i ? google.maps.Animation.BOUNCE : null
+      );
     }
   };
 
   componentDidMount() {
     let map = this.initMap();
-    let markers = this.createMarkers(map, this.props.locations);
+    let markers = this.createMarkers(map);
     this.setState({ map: map, markers: markers });
   }
 
@@ -84,8 +91,10 @@ class Map extends Component {
 }
 
 Map.propTypes = {
-  locations: PropTypes.array.isRequired,
-  filter: PropTypes.string.isRequired
+  locations: PropTypes.array,
+  filter: PropTypes.string,
+  activeLocation: PropTypes.number,
+  setActiveLocation: PropTypes.func.isRequired
 };
 
 export default Map;
