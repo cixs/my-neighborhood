@@ -4,7 +4,7 @@ let locations = [{
         lat: 45.794361,
         lng: 24.153760
      },
-    matter: "Culture"
+    matter: "culture"
 },
 {
     name: "Radu Stanca National Theatre",
@@ -12,7 +12,7 @@ let locations = [{
         lat: 45.791282,
         lng: 24.149352
     },
-    matter: "Culture"
+    matter: "culture"
 },
 {
     name: "Tineretului Park",
@@ -20,7 +20,7 @@ let locations = [{
         lat: 45.796465,
         lng: 24.157892
     },
-    matter: "Park"
+    matter: "park"
 },
 {
     name: "Benjamin Steakhouse & Bar",
@@ -28,7 +28,7 @@ let locations = [{
         lat: 45.795488,
         lng: 24.149848
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Music Pub",
@@ -36,7 +36,7 @@ let locations = [{
         lat: 45.798583, 
         lng: 24.151797
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Cafe Wien",
@@ -44,7 +44,7 @@ let locations = [{
         lat: 45.797641,
         lng: 24.149529
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Brukenthal Museum",
@@ -52,7 +52,7 @@ let locations = [{
         lat: 45.796445,
         lng: 24.150546
     },
-    matter: "Culture"
+    matter: "culture"
 },
 {
     name: "Continental Forum Sibiu",
@@ -60,7 +60,7 @@ let locations = [{
         lat: 45.792252, 
         lng: 24.147923
     },
-    matter: "Accommodation"
+    matter: "accommodation"
 },
 {
     name: "Casa Frieda",
@@ -68,7 +68,7 @@ let locations = [{
         lat: 45.793300, 
         lng: 24.149205
     },
-    matter: "Accommodation"
+    matter: "accommodation"
 },
 {
     name: "Cotton Pub",
@@ -76,7 +76,7 @@ let locations = [{
         lat: 45.791619,
         lng: 24.142890
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Cetatea Medievala",
@@ -84,7 +84,7 @@ let locations = [{
         lat: 45.795983, 
         lng: 24.147910
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Mai Lounge Caffe",
@@ -92,7 +92,7 @@ let locations = [{
         lat: 45.786859, 
         lng: 24.140639
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "New York American Restaurant",
@@ -100,7 +100,7 @@ let locations = [{
         lat: 45.788978, 
         lng: 24.144787
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Ramada Sibiu",
@@ -108,7 +108,7 @@ let locations = [{
         lat: 45.790876, 
         lng: 24.147815
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Grădina Restaurant Sibiu",
@@ -116,7 +116,7 @@ let locations = [{
         lat: 45.788664, 
         lng: 24.142507
     },
-    matter: "Food & Drink"
+    matter: "food & drink"
 },
 {
     name: "Dumbrava Sibiului Natural Park",
@@ -124,7 +124,7 @@ let locations = [{
         lat: 45.749604, 
         lng: 24.108468
     },
-    matter: "Park"
+    matter: "park"
 },
 {
     name: "Hilton Sibiu",
@@ -132,7 +132,7 @@ let locations = [{
         lat: 45.760516, 
         lng: 24.126875
     },
-    matter: "Accommodation"
+    matter: "accommodation"
 },
 {
     name: "Hotel Libra",
@@ -140,7 +140,7 @@ let locations = [{
         lat: 45.801470, 
         lng: 24.168815
     },
-    matter: "Accommodation"
+    matter: "accommodation"
 },
 {
     name: "Liquid The Club",
@@ -148,7 +148,7 @@ let locations = [{
         lat: 45.787803, 
         lng: 24.148018
     },
-    matter: "Nightlife"
+    matter: "nightlife"
 },
 {
     name: "Hard Rock Caffe",
@@ -156,7 +156,7 @@ let locations = [{
         lat: 45.798950, 
         lng: 24.156992
     },
-    matter: "Nightlife"
+    matter: "nightlife"
 },
 {
     name: "N'Bike Rock Club",
@@ -164,7 +164,7 @@ let locations = [{
         lat: 45.788977, 
         lng: 24.173980
     },
-    matter: "Nightlife"
+    matter: "nightlife"
 },
 {
     name: "Troubadour Club",
@@ -172,7 +172,7 @@ let locations = [{
         lat: 45.790040, 
         lng: 24.147462
     },
-    matter: "Nightlife"
+    matter: "nightlife"
 },
 {
     name: "Sub Arini Park",
@@ -180,7 +180,7 @@ let locations = [{
         lat: 45.782414,
         lng: 24.139571
     },
-    matter: "Park"
+    matter: "park"
 },
 {
     name: "The Thick Tower",
@@ -188,7 +188,7 @@ let locations = [{
         lat: 45.794119,
         lng: 24.154034
     },
-    matter: "History"
+    matter: "history"
 },
 {
     name: "Barbers Tower",
@@ -196,7 +196,7 @@ let locations = [{
         lat: 45.798017,
         lng: 24.156186
     },
-    matter: "History"
+    matter: "history"
 },
 {
     name: "Tanners Tower",
@@ -204,7 +204,7 @@ let locations = [{
         lat: 45.800728, 
         lng: 24.147386
     },
-    matter: "History"
+    matter: "history"
 },
 {
     name: "Powdery Tower",
@@ -212,7 +212,7 @@ let locations = [{
         lat: 45.801913,
         lng: 24.149630
     },
-    matter: "History"
+    matter: "history"
 },
 {
     name: "Altemberger House",
@@ -220,7 +220,7 @@ let locations = [{
         lat: 45.796979,
         lng: 24.149452
     },
-    matter: "History"
+    matter: "history"
 },
 {
     name: "The Council Tower",
@@ -228,7 +228,7 @@ let locations = [{
         lat: 45.797629,
         lng: 24.152133
     },
-    matter: "History"
+    matter: "history"
 },
 {
     name: "Harquebusiers Tower",
@@ -236,7 +236,7 @@ let locations = [{
         lat: 45.793243, 
         lng: 24.151237
     },
-    matter: "History"
+    matter: "history"
 },
 ]
 

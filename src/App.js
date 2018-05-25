@@ -5,18 +5,45 @@ import Sidebar from "./Sidebar.js";
 import Map from "./Map.js";
 import locations from "./locations.js";
 
-class App extends Component {
 
+class App extends Component {
   state = {
-    locations: []
-  }
+    locations: [],
+    markers: [],
+    filter: "all"
+  };
+
+  /*
+  * @desc generate a unique key for every element in locations list
+  * using latitude and longitude values
+  * @param object loc - an item in locations array
+  * @return string
+  */
+  generateKey = loc => {
+    let key = (loc.coord.lat.toString() + loc.coord.lng.toString()).replace(
+      /\./g,
+      ""
+    );
+    return key;
+  };
 
   componentWillMount() {
-    this.setState ({locations});
+    locations.forEach(loc => {
+      loc.key = this.generateKey(loc);
+    });
+    this.setState({ locations });
   }
 
+  /*
+  * @desc change the state.filter value based on the chosen filter option in Sidebar
+  * @param string - the selected option 'value' in Sidebar filter options
+  */
+  setFilter = filter => {
+    this.setState({ filter });
+  };
+
   render() {
-    const {locations} = this.state;
+    const{locations, filter} = this.state;
     return (
       <div>
         <div className="App">
@@ -26,8 +53,8 @@ class App extends Component {
           </header>
         </div>
         <div className="app-container">
-          <Sidebar locations = {locations} />
-          <Map locations = {locations}/>
+          <Sidebar locations={locations} filter={filter} setFilter = {this.setFilter} />
+          <Map locations={locations} filter={filter}/>
         </div>
       </div>
     );

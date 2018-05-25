@@ -60,18 +60,6 @@ html, body{
   padding: 0 10px;
 }
 
-.sidebar li {
-  padding: 10px 0;
-  color: #aaa;
-  cursor: pointer;
-  border-bottom: 1px solid #444;
-  text-align:right;
-}
-
-.sidebar li:hover {
-  color: #0df;
-}
-
 .sidebar-filter {
   width: 100%;
   padding: 5px 0 15px 0;
@@ -86,4 +74,17 @@ html, body{
 #map {
   width: 100%;
   height:100%;
+}
+.location-item{
+  padding: 10px 0;
+  color: #aaa;
+  cursor: pointer;
+  border-bottom: 1px solid #444;
+  text-align:right;
+}
+.location-item :hover {
+  color: #0df;
+}
+.no-display{
+  display: none;
 }
