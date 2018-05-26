@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import mapStyles from "./map-styles.js";
 
 /*
-  * from https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
-  * @desc import all images from a specific directory
-  * @param r - require context
-  * @return - images array
-  */
+ * from https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
+ * @desc import all images from a specific directory
+ * @param r - object (context)
+ * @return - array (images)
+ */
 function importAll(r) {
   // markers icon pack from https://templatic.com/directory-resources/
   let images = {};
@@ -25,51 +26,93 @@ class Map extends Component {
   };
 
   /*
-  * @desc create Map object
-  * @return - object
-  */
+   * @desc create Map object
+   * @return - object
+   */
   initMap = () => {
     let loc = {
-      lat: 45.773039,
-      lng: 24.129186
+      lat: 45.7926667,
+      lng: 24.1464086
     };
     const google = window.google;
     let map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 13,
+      zoom: 14,
       center: loc,
+      styles: mapStyles["all"],
       scrollwheel: true
     });
     return map;
   };
   /*
-  * @desc find the icon to be seted on a marker depending of its location
-  * @return - image object, an item in the images array
-  */
+   * @desc find the icon to be set on a marker depending of its location
+   * @param object (item in state.locations array )
+   * @return - image object, an item in the images array
+   */
   iconToSet = location => {
     let image;
-
-    if (location.matter === "accommodation") {
-      image = images["hotels.png"];
-    } else if (location.matter === "food & drink") {
-      image = images["food.png"];
-    } else if (location.matter === "art") {
-      image = images["concerts.png"];
-    } else if (location.matter === "history") {
-      image = images["museums.png"];
-    } else if (location.matter === "nightlife") {
-      image = images["dance-clubs.png"];
-    } else if (location.matter === "park") {
-      image = images["parks.png"];
-    } else {
-      image = images["marker.png"];
+    switch (location.matter) {
+      case "accommodation":
+        image = images["hotels.png"];
+        break;
+      case "food & drink":
+        image = images["food.png"];
+        break;
+      case "art":
+        image = images["concerts.png"];
+        break;
+      case "history":
+        image = images["museums.png"];
+        break;
+      case "nightlife":
+        image = images["dance-clubs.png"];
+        break;
+      case "park":
+        image = images["parks.png"];
+        break;
+      default:
+        image = images["marker.png"];
     }
+
     return image;
   };
+
   /*
-  * @desc create the array of markers,
-  * @params map - google Map object
-  * @return array
-  */
+   * @desc find the styles to be set to the map depending on the filter option
+   * @param string (option value of the selected option in Sidebar filter options )
+   * @return - object, an item in the mapStyles array
+   */
+  styleToSet = filter => {
+    let styles;
+    switch (filter) {
+      case "accommodation":
+        styles = mapStyles["accommodation"];
+        break;
+      case "food & drink":
+        styles = mapStyles["food_and_drink"];
+        break;
+      case "art":
+        styles = mapStyles["art"];
+        break;
+      case "history":
+        styles = mapStyles["history"];
+        break;
+      case "nightlife":
+        styles = mapStyles["nightlife"];
+        break;
+      case "park":
+        styles = mapStyles["park"];
+        break;
+      default:
+        styles = mapStyles["all"];
+    }
+
+    return styles;
+  };
+  /*
+   * @desc create the array of markers,
+   * @params map - google Map object
+   * @return array
+   */
   createMarkers = map => {
     let markers = [];
     const { locations, filter, setActiveLocation } = this.props;
@@ -94,9 +137,9 @@ class Map extends Component {
   };
 
   /*
-  * @desc show markers by hidding/showing them on the map based on filter criteria,
-  *       show the active location by setting animation on the corresponding marker
-  */
+   * @desc show markers by hidding/showing them on the map based on filter criteria,
+   *       show the active location by setting animation on the corresponding marker
+   */
   updateMarkers = (prevLocation, prevFilter) => {
     const { map, markers } = this.state;
     const { locations, filter, activeLocation } = this.props;
@@ -105,6 +148,9 @@ class Map extends Component {
     // if the locations filter was changed
     // hide/show markers
     if (filter !== prevFilter) {
+      map.setOptions({
+        styles: this.styleToSet(filter)
+      });
       for (let i = 0; i < locations.length; i++) {
         if (filter === "all" || filter === locations[i].matter) {
           if (!markers[i].getMap()) {
@@ -139,7 +185,10 @@ class Map extends Component {
   componentDidMount() {
     let map = this.initMap();
     let markers = this.createMarkers(map);
-    this.setState({ map: map, markers: markers });
+    this.setState({
+      map: map,
+      markers: markers
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {

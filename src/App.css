@@ -1,12 +1,15 @@
-html, body{
-  height:100vh;
+html,
+body {
+  height: 100vh;
 }
-*{
+
+* {
   box-sizing: border-box;
 }
+
 .App {
   text-align: center;
-  width:100%;
+  width: 100%;
 }
 
 .App-logo {
@@ -37,6 +40,7 @@ html, body{
     transform: rotate(360deg);
   }
 }
+
 .app-container {
   width: 100%;
   height: calc(100vh - 150px);
@@ -45,23 +49,23 @@ html, body{
 
 .sidebar {
   height: 100%;
-  width: 15%;
+  width: 300px;
   float: left;
   background-color: #111;
   padding: 20px 10px 60px 10px;
 }
-.sidebar-list{
+
+.sidebar-list {
   height: 100%;
   overflow: auto;
 }
+
 .sidebar ul {
-  width: 100%;
   list-style: none;
   padding: 0 10px;
 }
 
 .sidebar-filter {
-  width: 100%;
   padding: 5px 25px 20px 10px;
   border-bottom: 1px solid #444;
 }
@@ -69,27 +73,32 @@ html, body{
 #locations-filter {
   height: 30px;
   width: 100%;
+  font-size: 12pt;
 }
 
 #map {
   width: 100%;
-  height:100%;
+  height: 100%;
 }
-.location-item{
+
+.location-item {
   padding: 10px 5px;
   color: #aaa;
   cursor: pointer;
   border-bottom: 1px solid #444;
-  text-align:right;
+  text-align: right;
 }
+
 .location-item:hover {
   background-color: #303030;
   color: #0df;
 }
-.no-display{
+
+.no-display {
   display: none;
 }
-.active-location{
+
+.active-location {
   background-color: #0df;
-  color: #303030;
+  color: #000;
 }
