@@ -1,40 +1,27 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import mapStyles from "./map-styles.js";
+import utils from "./utils.js"
 
-/*
- * from https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
- * @desc import all images from a specific directory
- * @param r - object (context)
- * @return - array (images)
- */
-function importAll(r) {
-  // markers icon pack from https://templatic.com/directory-resources/
-  let images = {};
-  r.keys().map((item, index) => {
-    images[item.replace("./", "")] = r(item);
-    return images[item];
-  });
-  return images;
-}
-const images = importAll(require.context("./markers", false, /\.(png)$/));
+
 
 class Map extends Component {
   state = {
     markers: [],
-    map: {}
+    infoWindow:{},
+    map: {},
+    activePos: {x:0, y:0}
   };
 
   /*
    * @desc create Map object
    * @return - object
    */
-  initMap = () => {
+  initMap = (google) => {
     let loc = {
       lat: 45.7926667,
       lng: 24.1464086
     };
-    const google = window.google;
     let map = new google.maps.Map(document.getElementById("map"), {
       zoom: 14,
       center: loc,
@@ -43,12 +30,15 @@ class Map extends Component {
     });
     return map;
   };
+
+
   /*
    * @desc find the icon to be set on a marker depending of its location
-   * @param object (item in state.locations array )
+   * @param images - array of images
+   * @param location - object (item in state.locations array )
    * @return - image object, an item in the images array
    */
-  iconToSet = location => {
+  iconToSet = (images,location) => {
     let image;
     switch (location.matter) {
       case "accommodation":
@@ -108,23 +98,25 @@ class Map extends Component {
 
     return styles;
   };
+
+
   /*
    * @desc create the array of markers,
    * @params map - google Map object
    * @return array
    */
-  createMarkers = map => {
+  createMarkers = (map, google) => {
     let markers = [];
     const { locations, filter, setActiveLocation } = this.props;
-    const google = window.google;
-
+    const images = utils.importAll(require.context("./markers", false, /\.(png)$/));
+    let self = this;
     locations.forEach((location, index) => {
       if (filter === "all" || filter === location.matter) {
         let marker = new google.maps.Marker({
           position: location.coord,
           map: map,
           title: location.name,
-          icon: this.iconToSet(location)
+          icon: this.iconToSet(images, location)
         });
         marker.index = index;
         marker.addListener("click", function() {
@@ -136,12 +128,35 @@ class Map extends Component {
     return markers;
   };
 
+
+  /*
+   * @desc create the InfoWindow,
+   * @params map - google Map object
+   * @return a google.maps.InfoWindow object
+   */
+  createInfoWindow = (google) => {
+    let contentString = `<div className="info-window">
+    <h4>Name</h4>
+    <hr />
+    <p>number, street, city, country</p>
+    <p>phone: </p>
+    <p>facebook: </p>
+    <hr />
+    <p>foursquare: #photos, #reviews <a href="a">...see more</a></p>
+    <p>flickr: #photos <a href="a">...see more</a></p>
+    <p>wikipedia: <a href="a">...see more</a></p>
+  </div>`
+    let infoWindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+    return infoWindow;
+  };
   /*
    * @desc show markers by hidding/showing them on the map based on filter criteria,
    *       show the active location by setting animation on the corresponding marker
    */
   updateMarkers = (prevLocation, prevFilter) => {
-    const { map, markers } = this.state;
+    const { map, markers, infoWindow } = this.state;
     const { locations, filter, activeLocation } = this.props;
     const google = window.google;
 
@@ -170,38 +185,53 @@ class Map extends Component {
     }
 
     // if the active location was changed
-    // set/remove animation on markers
+    // set/remove animation on markers, close the infoWindow 
+    // and open it again near the active marker
     if (activeLocation !== prevLocation) {
       if (prevLocation > -1) {
         let animated = markers[prevLocation].getAnimation();
-        if (animated) markers[prevLocation].setAnimation(null);
+        if (animated){
+          markers[prevLocation].setAnimation(null);
+          infoWindow.close();
+        } 
       }
       if (activeLocation > -1) {
         markers[activeLocation].setAnimation(google.maps.Animation.BOUNCE);
+        infoWindow.open(map, markers[activeLocation]);
       }
     }
   };
 
   componentDidMount() {
-    let map = this.initMap();
-    let markers = this.createMarkers(map);
+    const google = window.google;
+    let map = this.initMap(google);
+    let markers = this.createMarkers(map, google);
+    let infoWindow = this.createInfoWindow(google);
     this.setState({
       map: map,
-      markers: markers
+      markers: markers,
+      infoWindow: infoWindow
     });
   }
 
+
   componentDidUpdate(prevProps, prevState) {
     // because render function is called first time and once before componentDidMount
-    // call of updateMarkers inside render() will produce an' undefined variable' (google) error
+    // calling updateMarkers inside render() will produce an' undefined variable' (google) error
     // this is why updateMarkers is called here
     const prevLocation = prevProps.activeLocation;
     const prevFilter = prevProps.filter;
     this.updateMarkers(prevLocation, prevFilter);
   }
 
+
   render() {
-    return <div id="map" role="application" aria-label="locations on map" />;
+    const { activePos } = this.state;
+    return (
+      <div className="map-container">
+        <div id="map" role="application" aria-label="locations on map" />
+      </div>
+    );
   }
 }
 

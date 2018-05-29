@@ -1,15 +1,17 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
+import logo from "./img/react.svg";
 import "./App.css";
 import Sidebar from "./Sidebar.js";
 import Map from "./Map.js";
+import AppLogo from "./AppLogo.js";
 import locations from "./locations.js";
 
 class App extends Component {
   state = {
     locations: [],
     filter: "all",
-    activeLocation: -1
+    activeLocation: -1,// index of the active location (the one that was clicked inside the sidebar list or as a marker inside the map)
+    infoContent: ""
   };
 
   /*
@@ -46,8 +48,18 @@ class App extends Component {
   */
   setActiveLocation = index => {
     const activeLocation = this.state.activeLocation;
-    this.setState({ activeLocation: activeLocation === index? -1 : index });
+    this.setState({ activeLocation: activeLocation === index ? -1 : index });
+    let infoContent = this.createInfoWindowContent(locations[activeLocation]);
   };
+
+  /*
+  * @desc create inner HTML for the infoWindow inside the google map
+  * @param location - object, an element of the locations array
+  */
+
+createInfoWindowContent = location => {
+
+};
 
   render() {
     const { locations, filter, activeLocation } = this.state;
@@ -55,8 +67,11 @@ class App extends Component {
       <div>
         <div className="App">
           <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">My Neighborhoods</h1>
+            <AppLogo />
+            <div className="react-logo">
+              <img src={logo} className="react-img" alt="logo" />
+              <h1 className="App-title">My Neighborhoods</h1>
+            </div>
           </header>
         </div>
         <div className="app-container">

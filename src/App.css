@@ -12,7 +12,32 @@ body {
   width: 100%;
 }
 
-.App-logo {
+.app-logo {
+  float: left;
+  height: 150px;
+  width: 240px;
+  padding: 10px 0 0 0;
+  background-color: #363636;
+}
+
+.app-logo img {
+  width: 60%;
+  height: 80%;
+}
+
+.app-logo h4 {
+  margin: 0;
+  padding: 0;
+  color: #61dafb;
+  font-weight: 100;
+}
+
+.react-logo {
+  display: inline;
+  padding: 20px;
+}
+
+.react-img {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
 }
@@ -20,7 +45,6 @@ body {
 .App-header {
   background-color: #222;
   height: 150px;
-  padding: 20px;
   color: white;
 }
 
@@ -44,15 +68,14 @@ body {
 .app-container {
   width: 100%;
   height: calc(100vh - 150px);
-  display: flex;
 }
 
 .sidebar {
   height: 100%;
-  width: 300px;
-  float: left;
+  width: 240px;
   background-color: #111;
   padding: 20px 10px 60px 10px;
+  float: left;
 }
 
 .sidebar-list {
@@ -76,9 +99,21 @@ body {
   font-size: 12pt;
 }
 
+.map-container {
+  width: calc(100% - 240px);
+  height: 100%;
+  display: inline-block;
+}
+
 #map {
   width: 100%;
   height: 100%;
+  position: relative;
+}
+
+.info-window h4, p{
+  padding:2px;
+  margin:0;
 }
 
 .location-item {
@@ -91,7 +126,7 @@ body {
 
 .location-item:hover {
   background-color: #303030;
-  color: #0df;
+  color: #61dafb;
 }
 
 .no-display {
@@ -99,6 +134,6 @@ body {
 }
 
 .active-location {
-  background-color: #0df;
+  background-color: #61dafb;
   color: #000;
 }
