@@ -8,8 +8,8 @@ class LocationItem extends Component {
   */
   setActive = () => {
     const index = this.props.index;
-    const setActiveItem = this.props.setActiveItem;
-    setActiveItem(index);
+    const setNewActiveIndex = this.props.setNewActiveIndex ;
+    setNewActiveIndex (index);
   };
 
   render() {
@@ -35,7 +35,7 @@ LocationItem.propTypes = {
   visible: PropTypes.bool,
   active: PropTypes.bool,
   index: PropTypes.number.isRequired,
-  setActiveItem: PropTypes.func.isRequired
+  setNewActiveIndex: PropTypes.func.isRequired
 };
 
 export default LocationItem;

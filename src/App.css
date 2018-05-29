@@ -115,7 +115,10 @@ body {
   padding:2px;
   margin:0;
 }
-
+.info-window {
+  background-color: rgb(248, 232, 201);
+  box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+}
 .location-item {
   padding: 10px 5px;
   color: #aaa;

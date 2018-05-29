@@ -10,7 +10,7 @@ class Sidebar extends Component {
       filter,
       activeLocation,
       setFilter,
-      setActiveLocation
+      setNewActiveIndex
     } = this.props;
     return (
       <div className="sidebar">
@@ -19,7 +19,7 @@ class Sidebar extends Component {
           locations={locations}
           filter={filter}
           activeLocation={activeLocation}
-          setActiveLocation={setActiveLocation}
+          setNewActiveIndex={setNewActiveIndex}
         />
       </div>
     );
@@ -31,6 +31,6 @@ Sidebar.propTypes = {
   filter: PropTypes.string,
   activeLocation: PropTypes.number,
   setFilter: PropTypes.func.isRequired,
-  setActiveLocation: PropTypes.func.isRequired
+  setNewActiveIndex: PropTypes.func.isRequired
 };
 export default Sidebar;

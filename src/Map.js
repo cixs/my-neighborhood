@@ -1,23 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import mapStyles from "./map-styles.js";
-import utils from "./utils.js"
-
-
+import importAll from "./functions.js";
 
 class Map extends Component {
   state = {
     markers: [],
-    infoWindow:{},
-    map: {},
-    activePos: {x:0, y:0}
+    infoWindow: {},
+    map: {}
   };
 
   /*
    * @desc create Map object
    * @return - object
    */
-  initMap = (google) => {
+  initMap = google => {
     let loc = {
       lat: 45.7926667,
       lng: 24.1464086
@@ -31,14 +28,13 @@ class Map extends Component {
     return map;
   };
 
-
   /*
    * @desc find the icon to be set on a marker depending of its location
    * @param images - array of images
    * @param location - object (item in state.locations array )
    * @return - image object, an item in the images array
    */
-  iconToSet = (images,location) => {
+  iconToSet = (images, location) => {
     let image;
     switch (location.matter) {
       case "accommodation":
@@ -99,7 +95,6 @@ class Map extends Component {
     return styles;
   };
 
-
   /*
    * @desc create the array of markers,
    * @params map - google Map object
@@ -107,9 +102,11 @@ class Map extends Component {
    */
   createMarkers = (map, google) => {
     let markers = [];
-    const { locations, filter, setActiveLocation } = this.props;
-    const images = utils.importAll(require.context("./markers", false, /\.(png)$/));
-    let self = this;
+    const { locations, filter, setNewActiveIndex } = this.props;
+    const images = utils.importAll(
+      require.context("./markers", false, /\.(png)$/)
+    );
+    
     locations.forEach((location, index) => {
       if (filter === "all" || filter === location.matter) {
         let marker = new google.maps.Marker({
@@ -118,9 +115,9 @@ class Map extends Component {
           title: location.name,
           icon: this.iconToSet(images, location)
         });
-        marker.index = index;
+
         marker.addListener("click", function() {
-          setActiveLocation(marker.getAnimation() ? -1 : marker.index);
+          setNewActiveIndex(marker.getAnimation() ? -1 : index);
         });
         markers.push(marker);
       }
@@ -128,41 +125,32 @@ class Map extends Component {
     return markers;
   };
 
-
   /*
    * @desc create the InfoWindow,
    * @params map - google Map object
    * @return a google.maps.InfoWindow object
    */
-  createInfoWindow = (google) => {
-    let contentString = `<div className="info-window">
-    <h4>Name</h4>
-    <hr />
-    <p>number, street, city, country</p>
-    <p>phone: </p>
-    <p>facebook: </p>
-    <hr />
-    <p>foursquare: #photos, #reviews <a href="a">...see more</a></p>
-    <p>flickr: #photos <a href="a">...see more</a></p>
-    <p>wikipedia: <a href="a">...see more</a></p>
-  </div>`
+  createInfoWindow = google => {
+    const { infoWindowContent } = this.props;
     let infoWindow = new google.maps.InfoWindow({
-      content: contentString
+      content: infoWindowContent
     });
     return infoWindow;
   };
+
   /*
    * @desc show markers by hidding/showing them on the map based on filter criteria,
    *       show the active location by setting animation on the corresponding marker
+   * @params - previous values of this.state variables
    */
-  updateMarkers = (prevLocation, prevFilter) => {
+  updateMap = (prevActiveIndex, prevFilter, prevInfoWindowContent) => {
     const { map, markers, infoWindow } = this.state;
-    const { locations, filter, activeLocation } = this.props;
+    const { locations, filter, activeIndex, infoWindowContent } = this.props;
     const google = window.google;
 
-    // if the locations filter was changed
-    // hide/show markers
     if (filter !== prevFilter) {
+      // if the locations filter was changed
+      // hide/show markers
       map.setOptions({
         styles: this.styleToSet(filter)
       });
@@ -171,8 +159,8 @@ class Map extends Component {
           if (!markers[i].getMap()) {
             markers[i].setMap(map);
             // if the marker is active and it was previously hidden
-            // when is set to be visible re-establish the animation
-            if (i === activeLocation) {
+            //  re-establish the animation when is set to be visible
+            if (i === activeIndex) {
               markers[i].setAnimation(google.maps.Animation.BOUNCE);
             }
           }
@@ -183,25 +171,31 @@ class Map extends Component {
         }
       }
     }
-
-    // if the active location was changed
-    // set/remove animation on markers, close the infoWindow 
-    // and open it again near the active marker
-    if (activeLocation !== prevLocation) {
-      if (prevLocation > -1) {
-        let animated = markers[prevLocation].getAnimation();
-        if (animated){
-          markers[prevLocation].setAnimation(null);
+    if (activeIndex !== prevActiveIndex) {
+      // if the active location was changed
+      // set/remove animation on markers, close the infoWindow
+      // and open it again near the active marker
+      if (prevActiveIndex > -1) {
+        // when a loca
+        let animated = markers[prevActiveIndex].getAnimation();
+        if (animated) {
+          markers[prevActiveIndex].setAnimation(null);
           infoWindow.close();
-        } 
+        }
       }
-      if (activeLocation > -1) {
-        markers[activeLocation].setAnimation(google.maps.Animation.BOUNCE);
-        infoWindow.open(map, markers[activeLocation]);
+      if (activeIndex > -1) {
+        infoWindow.open(map, markers[activeIndex]);
       }
+    }
+
+    if (prevInfoWindowContent !== infoWindowContent) {
+      // if the infoWindow content was changed
+      // update the infoWindow
+        infoWindow.setContent(infoWindowContent);
     }
   };
 
+  
   componentDidMount() {
     const google = window.google;
     let map = this.initMap(google);
@@ -214,22 +208,20 @@ class Map extends Component {
     });
   }
 
-
   componentDidUpdate(prevProps, prevState) {
     // because render function is called first time and once before componentDidMount
     // calling updateMarkers inside render() will produce an' undefined variable' (google) error
     // this is why updateMarkers is called here
-    const prevLocation = prevProps.activeLocation;
+    const prevActiveIndex = prevProps.activeIndex;
     const prevFilter = prevProps.filter;
-    this.updateMarkers(prevLocation, prevFilter);
+    const prevInfoWindowContent = prevProps.infoWindowContent;
+    this.updateMap(prevActiveIndex, prevFilter, prevInfoWindowContent);
   }
 
-
   render() {
-    const { activePos } = this.state;
     return (
       <div className="map-container">
-        <div id="map" role="application" aria-label="locations on map" />
+        <div id="map" />
       </div>
     );
   }
@@ -238,8 +230,9 @@ class Map extends Component {
 Map.propTypes = {
   locations: PropTypes.array,
   filter: PropTypes.string,
-  activeLocation: PropTypes.number,
-  setActiveLocation: PropTypes.func.isRequired
+  activeIndex: PropTypes.number,
+  setNewActiveIndex: PropTypes.func.isRequired,
+  infoWindowContent: PropTypes.string
 };
 
 export default Map;
