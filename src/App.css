@@ -1,142 +1,116 @@
 html,
 body {
-  height: 100vh;
-}
-
-* {
   box-sizing: border-box;
 }
 
-.App {
-  text-align: center;
+.app-container {
   width: 100%;
+  height: 100vh;
+  display: flex;
+}
+
+.left-container {
+  height: 100%;
+  width: 240px;
+  background-color: rgb(241,241,241);
+  display:inline-block;
+  box-shadow:0 5px 10px 10px #000;
 }
 
 .app-logo {
-  float: left;
-  height: 150px;
+  height: 200px;
   width: 240px;
-  padding: 10px 0 0 0;
+  display: block;
   background-color: #363636;
+  text-align: center;
 }
 
 .app-logo img {
+  margin-top:20px;
   width: 60%;
-  height: 80%;
+  height: 70%;
 }
 
 .app-logo h4 {
   margin: 0;
   padding: 0;
   color: #61dafb;
-  font-weight: 100;
+  display: block;
 }
 
-.react-logo {
-  display: inline;
-  padding: 20px;
+.locations-bar {
+  height:calc( 100% - 240px);
+  border-right: 1px solid #999;
 }
 
-.react-img {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.locations-list {
+  height:calc( 100% - 30px);
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.app-container {
-  width: 100%;
-  height: calc(100vh - 150px);
-}
-
-.sidebar {
-  height: 100%;
-  width: 240px;
-  background-color: #111;
-  padding: 20px 10px 60px 10px;
-  float: left;
-}
-
-.sidebar-list {
-  height: 100%;
-  overflow: auto;
-}
-
-.sidebar ul {
-  list-style: none;
+.locations-list ul {
   padding: 0 10px;
+  height:100%;
+  overflow: auto;
+  margin: 0;
 }
 
-.sidebar-filter {
-  padding: 5px 25px 20px 10px;
+.location-item {
+  padding: 10px 5px;
+  color: #333;
+  cursor: pointer;
+  border-bottom: 1px solid #999;
+  text-align: right;
+  display: block;
+}
+
+.location-item:hover {
+  background-color: #bbb;
+  color: #333;
+}
+
+.active-location {
+  background-color: #444;
+  color: #ddd;
+}
+
+.locations-filter {
+  padding: 20px 25px 20px 20px;
   border-bottom: 1px solid #444;
 }
 
-#locations-filter {
+#filter-select {
   height: 30px;
   width: 100%;
   font-size: 12pt;
 }
 
-.map-container {
-  width: calc(100% - 240px);
+.App {
+  width: 100%;
   height: 100%;
-  display: inline-block;
 }
 
+.App-header {
+  background-color: #222;
+  height: 50px;
+  color: white;
+}
+.map-container {
+  width: 100%;
+  height: calc( 100% - 50px);
+  display: inline-block;
+}
 #map {
   width: 100%;
   height: 100%;
-  position: relative;
 }
 
-.info-window h4, p{
-  padding:2px;
-  margin:0;
+.info-window h3,
+p {
+  padding: 2px;
+  margin: 0;
 }
+
 .info-window {
   background-color: rgb(248, 232, 201);
-  box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
-}
-.location-item {
-  padding: 10px 5px;
-  color: #aaa;
-  cursor: pointer;
-  border-bottom: 1px solid #444;
-  text-align: right;
-}
-
-.location-item:hover {
-  background-color: #303030;
-  color: #61dafb;
-}
-
-.no-display {
-  display: none;
-}
-
-.active-location {
-  background-color: #61dafb;
-  color: #000;
+  box-shadow: 0px 2px 10px 1px rgba(0, 0, 0, 0.5);
 }

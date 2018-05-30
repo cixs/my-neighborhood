@@ -1,23 +1,22 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-class SidebarFilter extends Component {
+class LocationsFilter extends Component {
   /*
-  * @desc get the option value of the selected filter option in Sidebar
+  * @desc get the option value of the selected filter option in LocationsBar
   * and call the setFilter function in App component
   */
   changeFilter = () => {
     const { setFilter } = this.props;
-    let filter = document.getElementById("locations-filter").value;
+    let filter = document.getElementById("filter-select").value;
     setFilter(filter);
   };
 
   render() {
     return (
-      <div className="sidebar-filter">
+      <div className="locations-filter">
         <select
-          id="locations-filter"
-          aria-label="filter"
+          id="filter-select"
           onChange={this.changeFilter}
         >
           <option value="all">All locations</option>
@@ -33,8 +32,8 @@ class SidebarFilter extends Component {
   }
 }
 
-SidebarFilter.propTypes = {
+LocationsFilter.propTypes = {
   setFilter: PropTypes.func.isRequired
 };
 
-export default SidebarFilter;
+export default LocationsFilter;

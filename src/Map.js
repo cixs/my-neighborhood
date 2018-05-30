@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import mapStyles from "./map-styles.js";
-import importAll from "./functions.js";
+import {importAllImagesFromFolder}  from "./functions.js";
 
 class Map extends Component {
   state = {
@@ -64,7 +64,7 @@ class Map extends Component {
 
   /*
    * @desc find the styles to be set to the map depending on the filter option
-   * @param string (option value of the selected option in Sidebar filter options )
+   * @param string (option value of the selected option in LocationsBar filter options )
    * @return - object, an item in the mapStyles array
    */
   styleToSet = filter => {
@@ -103,7 +103,7 @@ class Map extends Component {
   createMarkers = (map, google) => {
     let markers = [];
     const { locations, filter, setNewActiveIndex } = this.props;
-    const images = utils.importAll(
+    const images = importAllImagesFromFolder(
       require.context("./markers", false, /\.(png)$/)
     );
     
@@ -171,12 +171,12 @@ class Map extends Component {
         }
       }
     }
+    
     if (activeIndex !== prevActiveIndex) {
       // if the active location was changed
       // set/remove animation on markers, close the infoWindow
       // and open it again near the active marker
       if (prevActiveIndex > -1) {
-        // when a loca
         let animated = markers[prevActiveIndex].getAnimation();
         if (animated) {
           markers[prevActiveIndex].setAnimation(null);
@@ -184,6 +184,7 @@ class Map extends Component {
         }
       }
       if (activeIndex > -1) {
+        markers[activeIndex].setAnimation(google.maps.Animation.BOUNCE);
         infoWindow.open(map, markers[activeIndex]);
       }
     }
@@ -211,7 +212,7 @@ class Map extends Component {
   componentDidUpdate(prevProps, prevState) {
     // because render function is called first time and once before componentDidMount
     // calling updateMarkers inside render() will produce an' undefined variable' (google) error
-    // this is why updateMarkers is called here
+    // this is why updateMap is called here
     const prevActiveIndex = prevProps.activeIndex;
     const prevFilter = prevProps.filter;
     const prevInfoWindowContent = prevProps.infoWindowContent;

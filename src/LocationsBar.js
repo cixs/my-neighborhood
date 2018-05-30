@@ -1,24 +1,24 @@
 import React, { Component } from "react";
-import SidebarFilter from "./SidebarFilter.js";
-import SidebarList from "./SidebarList.js";
+import LocationsFilter from "./LocationsFilter.js";
+import LocationsList from "./LocationsList.js";
 import PropTypes from "prop-types";
 
-class Sidebar extends Component {
+class LocationsBar extends Component {
   render() {
     const {
       locations,
       filter,
-      activeLocation,
+      activeIndex,
       setFilter,
       setNewActiveIndex
     } = this.props;
     return (
-      <div className="sidebar">
-        <SidebarFilter setFilter={setFilter} />
-        <SidebarList
+      <div className="locations-bar">
+        <LocationsFilter setFilter={setFilter} />
+        <LocationsList
           locations={locations}
           filter={filter}
-          activeLocation={activeLocation}
+          activeIndex={activeIndex}
           setNewActiveIndex={setNewActiveIndex}
         />
       </div>
@@ -26,11 +26,11 @@ class Sidebar extends Component {
   }
 }
 
-Sidebar.propTypes = {
+LocationsBar.propTypes = {
   locations: PropTypes.array,
   filter: PropTypes.string,
-  activeLocation: PropTypes.number,
+  activeIndex: PropTypes.number,
   setFilter: PropTypes.func.isRequired,
   setNewActiveIndex: PropTypes.func.isRequired
 };
-export default Sidebar;
+export default LocationsBar;

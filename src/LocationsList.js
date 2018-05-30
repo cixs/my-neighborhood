@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import LocationItem from "./LocationItem.js";
 import PropTypes from "prop-types";
 
-class SidebarList extends Component {
+class LocationsList extends Component {
 
 
   render() {
-    const { locations, filter, activeLocation, setNewActiveIndex  } = this.props;
+    const { locations, filter, activeIndex, setNewActiveIndex  } = this.props;
     return (
-      <div className="sidebar-list" aria-label="a list of locations">
+      <div className="locations-list">
         <ul>
           {locations.map((loc, index) => (
             <LocationItem
@@ -16,21 +16,22 @@ class SidebarList extends Component {
               location={loc}
               visible={filter === "all" || filter === loc.matter}
               index={index}
-              active={index === activeLocation}
+              active={index === activeIndex}
               setNewActiveIndex ={setNewActiveIndex}
             />
           ))}
         </ul>
       </div>
+      
     );
   }
 }
 
-SidebarList.propTypes = {
+LocationsList.propTypes = {
   locations: PropTypes.array,
   filter: PropTypes.string,
-  activeLocation: PropTypes.number,
+  activeIndex: PropTypes.number,
   setNewActiveIndex : PropTypes.func.isRequired
 };
 
-export default SidebarList;
+export default LocationsList;

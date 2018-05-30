@@ -238,6 +238,22 @@ let locations = [{
     },
     matter: "history"
 },
+{
+    name: "Garden Lounge & Club",
+    coord: {
+        lat: 45.790112, 
+        lng: 24.147801
+    },
+    matter: "nightlife"
+},
+{
+    name: "Hotel Ibis",
+    coord: {
+        lat: 45.789916, 
+        lng: 24.148973
+    },
+    matter: "nightlife"
+}
 ]
 
 export default locations;
