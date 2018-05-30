@@ -74,7 +74,8 @@ body {
 }
 
 .locations-filter {
-  padding: 20px 25px 20px 20px;
+  background-color: #00f;
+  padding: 20px 15px 20px 10px;
   border-bottom: 1px solid #444;
 }
 
@@ -104,13 +105,24 @@ body {
   height: 100%;
 }
 
-.info-window h3,
+.gm-style-iw h3,
 p {
   padding: 2px;
   margin: 0;
 }
 
-.info-window {
-  background-color: rgb(248, 232, 201);
-  box-shadow: 0px 2px 10px 1px rgba(0, 0, 0, 0.5);
+.gm-style-iw :nth-child(2) {
+  max-height: 200px;
+  max-width: 260px;
+  overflow: auto;
+  height: auto;
+}
+
+.gm-style-iw img{
+  margin:5px;
+  display:inline-block;
+}
+
+.no-display{
+  display: none;
 }

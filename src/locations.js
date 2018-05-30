@@ -1,5 +1,5 @@
 let locations = [{
-    name: "Thalia Concert Hall",
+    name: "Filarmonica Sibiu",
     coord: {
         lat: 45.794361,
         lng: 24.153760
@@ -7,7 +7,7 @@ let locations = [{
     matter: "art"
 },
 {
-    name: "Radu Stanca National Theatre",
+    name: " Teatrul National Radu Stanca Sibiu",
     coord: {
         lat: 45.791282,
         lng: 24.149352
@@ -15,7 +15,15 @@ let locations = [{
     matter: "art"
 },
 {
-    name: "Tineretului Park",
+    name: "Parcul Cetății",
+    coord: {
+        lat: 45.793631, 
+        lng: 24.152326
+    },
+    matter: "park"
+},
+{
+    name: "Parcul Tineretului",
     coord: {
         lat: 45.796465,
         lng: 24.157892
@@ -47,7 +55,7 @@ let locations = [{
     matter: "food & drink"
 },
 {
-    name: "Brukenthal Museum",
+    name: "Muzeul Brukenthal",
     coord: {
         lat: 45.796445,
         lng: 24.150546
@@ -55,7 +63,7 @@ let locations = [{
     matter: "art"
 },
 {
-    name: "Continental Forum Sibiu",
+    name: "Hotel Continental Forum",
     coord: {
         lat: 45.792252, 
         lng: 24.147923
@@ -63,7 +71,7 @@ let locations = [{
     matter: "accommodation"
 },
 {
-    name: "Casa Frieda",
+    name: "Restaurant Casa Frieda",
     coord: {
         lat: 45.793300, 
         lng: 24.149205
@@ -87,7 +95,7 @@ let locations = [{
     matter: "food & drink"
 },
 {
-    name: "Mai Lounge Caffe",
+    name: "Mai Coffee Lounge",
     coord: {
         lat: 45.786859, 
         lng: 24.140639
@@ -95,7 +103,7 @@ let locations = [{
     matter: "food & drink"
 },
 {
-    name: "New York American Restaurant",
+    name: "New York",
     coord: {
         lat: 45.788978, 
         lng: 24.144787
@@ -119,10 +127,10 @@ let locations = [{
     matter: "food & drink"
 },
 {
-    name: "Dumbrava Sibiului Natural Park",
+    name: "Parc Astra",
     coord: {
-        lat: 45.749604, 
-        lng: 24.108468
+        lat: 45.793341, 
+        lng: 24.147503
     },
     matter: "park"
 },
@@ -159,7 +167,7 @@ let locations = [{
     matter: "nightlife"
 },
 {
-    name: "N'Bike Rock Club",
+    name: "Rock&Bike Club",
     coord: {
         lat: 45.788977, 
         lng: 24.173980
@@ -167,7 +175,7 @@ let locations = [{
     matter: "nightlife"
 },
 {
-    name: "Troubadour Club",
+    name: "Troubadour",
     coord: {
         lat: 45.790040, 
         lng: 24.147462
@@ -175,7 +183,7 @@ let locations = [{
     matter: "nightlife"
 },
 {
-    name: "Sub Arini Park",
+    name: "Parcul Sub Arini",
     coord: {
         lat: 45.782414,
         lng: 24.139571
@@ -183,7 +191,7 @@ let locations = [{
     matter: "park"
 },
 {
-    name: "The Thick Tower",
+    name: "Turnul Gros",
     coord: {
         lat: 45.794119,
         lng: 24.154034
@@ -191,31 +199,23 @@ let locations = [{
     matter: "history"
 },
 {
-    name: "Barbers Tower",
+    name: "Turnul Olarilor",
     coord: {
-        lat: 45.798017,
-        lng: 24.156186
+        lat: 45.793816, 
+        lng: 24.152264
     },
     matter: "history"
 },
 {
-    name: "Tanners Tower",
+    name: "Turnul Dulgherilor",
     coord: {
-        lat: 45.800728, 
-        lng: 24.147386
+        lat: 45.794337, 
+        lng: 24.153211
     },
     matter: "history"
 },
 {
-    name: "Powdery Tower",
-    coord: {
-        lat: 45.801913,
-        lng: 24.149630
-    },
-    matter: "history"
-},
-{
-    name: "Altemberger House",
+    name: "Casa Altemberger",
     coord: {
         lat: 45.796979,
         lng: 24.149452
@@ -223,7 +223,7 @@ let locations = [{
     matter: "history"
 },
 {
-    name: "The Council Tower",
+    name: "Turnul Sfatului",
     coord: {
         lat: 45.797629,
         lng: 24.152133
@@ -231,15 +231,7 @@ let locations = [{
     matter: "history"
 },
 {
-    name: "Harquebusiers Tower",
-    coord: {
-        lat: 45.793243, 
-        lng: 24.151237
-    },
-    matter: "history"
-},
-{
-    name: "Garden Lounge & Club",
+    name: "Zen Garden Lounge&Club",
     coord: {
         lat: 45.790112, 
         lng: 24.147801
@@ -252,7 +244,7 @@ let locations = [{
         lat: 45.789916, 
         lng: 24.148973
     },
-    matter: "nightlife"
+    matter: "accommodation"
 }
 ]
 

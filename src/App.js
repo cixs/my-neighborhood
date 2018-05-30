@@ -5,9 +5,11 @@ import Map from "./Map.js";
 import AppLogo from "./AppLogo.js";
 import locations from "./locations.js";
 import {
-  flickr_buildQueryURL,
-  foursquare_buildQueryURL,
-  makeRequest
+  _buildFlickrQueryURL,
+  _buildFoursquareQueryURL,
+  _makeRequest,
+  _makeFlickrInfoHTML,
+  _makeFoursquareInfoHTML 
 } from "./functions.js";
 
 class App extends Component {
@@ -64,50 +66,50 @@ class App extends Component {
   };
 
   /*
-   * @desc change the state.filter value based on the chosen filter option in LocationsBar
-   * @param string - the selected option 'value' in LocationsBar filter options
+   * @desc change the activeIndex value in this.state when the user click a marker or an item in locations list
+   * @param index - the location index in the locations array
    */
   setNewActiveIndex = index => {
     const { locations, activeIndex } = this.state;
     const newActiveIndex = activeIndex === index ? -1 : index;
-    this.setState({
-      activeIndex: newActiveIndex
-    });
 
     const activeLocation = locations[newActiveIndex];
 
     if (newActiveIndex > -1) {
       let self = this;
-      let flickrURL = flickr_buildQueryURL(
+      let flickrURL = _buildFlickrQueryURL(
         activeLocation.name,
         activeLocation.coord
       );
       //make nested http requests
-      makeRequest(flickrURL)
+      _makeRequest(flickrURL)
         .then(function(resp) {
           // set the flicker photos in the state variable
-          self.fillFlickrContent(resp);
+          self.setFlickrContent(resp);
 
-          let foursquareURL = foursquare_buildQueryURL(
+          let foursquareURL = _buildFoursquareQueryURL(
             activeLocation.name,
             activeLocation.coord
           );
-          makeRequest(foursquareURL)
+          _makeRequest(foursquareURL)
             .then(function(resp) {
               // set the foursquare venue in the state variable
-              self.fillFoursquareContent(resp);
+              self.setFoursquareContent(resp);
               // at this point all requests are completed
               // so we have data to fill the infoWindow on google map
               self.createInfoWindowHTML(activeLocation);
             })
             .catch(function(err) {
-              console.error(err);
+              alert(`There is a problem with your request\nStatus: ${err.status}\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`);
             });
         })
         .catch(function(err) {
-          console.error(err);
+            alert(`There is a problem with your request\nStatus: ${err.status}\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`);
         });
     }
+    this.setState({
+      activeIndex: newActiveIndex
+    });
   };
 
   /*
@@ -116,20 +118,13 @@ class App extends Component {
    */
   createInfoWindowHTML = location => {
     const { flickrContent, foursquareContent } = this.state;
-    let infoHTML = `<div classname="infoWindow">
+    let infoHTML = `<div">
     <h3>${location.name}</h3>
-    <hr />
-    <p>${foursquareContent.response.venues[0].location.formattedAddress[0] ||
-      "not available"}</p>
-    <p>phone: </p>
-    <p>facebook: </p>
-    <hr />
-    <p>foursquare: #photos, #reviews <a href="a"> (see more)</a></p>
-    <p>flickr: ${
-      flickrContent.photos.total
-    } photos <a href="a"> (see more)</a></p>
-    <p>wikipedia: <a href="a"> (see more)</a></p>
-    </div>`;
+    <hr /></div>`;
+    
+    infoHTML+= _makeFoursquareInfoHTML (foursquareContent);
+    infoHTML+= _makeFlickrInfoHTML (flickrContent);
+     
     this.setState({ infoWindowHTML: infoHTML });
   };
 
@@ -137,7 +132,7 @@ class App extends Component {
    * @desc make http request for flickr and set returned object to this.state
    * @param location - object, an element of the locations array
    */
-  fillFlickrContent = response => {
+  setFlickrContent = response => {
     let photos = JSON.parse(response);
     this.setState({ flickrContent: photos });
   };
@@ -145,7 +140,7 @@ class App extends Component {
    * @desc make http request for foursquare and set returned object to this.state
    * @param location - object, an element of the locations array
    */
-  fillFoursquareContent = response => {
+  setFoursquareContent = response => {
     let photos = JSON.parse(response);
     this.setState({ foursquareContent: photos });
   };

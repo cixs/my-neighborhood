@@ -20,7 +20,7 @@ class Map extends Component {
       lng: 24.1464086
     };
     let map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 14,
+      zoom: 15,
       center: loc,
       styles: mapStyles["all"],
       scrollwheel: true
@@ -154,6 +154,7 @@ class Map extends Component {
       map.setOptions({
         styles: this.styleToSet(filter)
       });
+
       for (let i = 0; i < locations.length; i++) {
         if (filter === "all" || filter === locations[i].matter) {
           if (!markers[i].getMap()) {
@@ -232,7 +233,7 @@ Map.propTypes = {
   locations: PropTypes.array,
   filter: PropTypes.string,
   activeIndex: PropTypes.number,
-  setNewActiveIndex: PropTypes.func.isRequired,
+  setNewActiveIndex: PropTypes.func,
   infoWindowContent: PropTypes.string
 };
 
