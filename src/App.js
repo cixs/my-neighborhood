@@ -3,6 +3,7 @@ import "./App.css";
 import LocationsBar from "./LocationsBar.js";
 import Map from "./Map.js";
 import AppLogo from "./AppLogo.js";
+import Footer from "./Footer.js";
 import locations from "./locations.js";
 import {
   _buildFlickrQueryURL,
@@ -11,6 +12,7 @@ import {
   _makeFlickrInfoHTML,
   _makeFoursquareInfoHTML 
 } from "./functions.js";
+
 
 class App extends Component {
   state = {
@@ -169,6 +171,7 @@ class App extends Component {
             setNewActiveIndex={this.setNewActiveIndex}
             infoWindowContent={infoWindowHTML}
           />
+          <Footer/>
         </div>
       </div>
     );
