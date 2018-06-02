@@ -5,24 +5,28 @@ body {
   height: 100vh;
   min-width: 300px;
 }
-
+.app{
+  position:fixed;
+  height: 100%;
+  width: 100%;
+}
 * {
   box-sizing: border-box;
 }
-
 #main {
-  display: inline-block;
-  height: calc( 100vh - 120px);
+  float:left;
+  height: calc( 100% - 40px);
   width: calc( 100% - 240px);
 }
 
 #map {
   height: 100%;
   width: 100%;
+  float:left
 }
 
 header {
-  height: 80px;
+  max-height: 80px;
   background-color: #222;
   color: white;
   padding-right: 10px;
@@ -60,7 +64,7 @@ header a:hover {
 
 .hamburger-btn {
   width: 50px;
-  height:80px;
+  height: 80px;
   cursor: pointer;
   display: none;
   margin: 20px 10px 20px 0;
@@ -73,8 +77,8 @@ header a:hover {
   min-width: 200px;
   display: block;
   margin: 21px 0 20px 0;
-  margin-left:auto;
-  float:right;
+  margin-left: auto;
+  float: right;
 }
 
 #search-input {
@@ -82,7 +86,7 @@ header a:hover {
   width: 164px;
   font-size: 16px;
   border: none;
-  padding: 0;
+  padding-left: 5px;
   display: inline-block;
   position: relative;
 }
@@ -103,12 +107,11 @@ header a:hover {
 }
 
 #locations-bar {
+  float:left;
+  height: calc( 100% - 40px);
   min-width: 240px;
   max-width: 240px;
-  height: calc( 100vh - 40px);
   background-color: #222;
-  display: inline-block;
-  transition: left 0.5;
 }
 
 .locations-list {
@@ -149,13 +152,13 @@ header a:hover {
   width: 100%;
   font-size: 12pt;
 }
-
-.gm-style-iw h3,
-p {
-  padding: 2px;
+/*
+* info window attributtes
+*/
+.gm-style-iw p {
   margin: 0;
+  padding:0;
 }
-
 .gm-style-iw :nth-child(2) {
   max-height: 200px;
   max-width: 260px;
@@ -167,18 +170,32 @@ p {
   margin: 5px;
   display: inline-block;
 }
-
+.gm-style-iw #marker-remove-btn {
+  border: none;
+  background-color: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  float:right;
+  margin-right:0;
+  padding-right:0;
+  color:#f00;
+}
+/*
+* hidden filtered element on location list
+*/
 .no-display {
   display: none;
 }
-
+/*
+*footer
+*/
 footer {
   width: 100%;
   height: 40px;
   background-color: #222;
   font-size: 10pt;
   color: #858585;
-  position: fixed;
+  position: relative;
   display: flex;
   bottom: 0;
 }
@@ -245,6 +262,99 @@ footer a:hover {
     transform: rotate(360deg);
   }
 }
+/*
+* attributtes for error modal popup
+*/
+#error-modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#error-modal h4,
+h5,
+p,span {
+  margin: 0;
+  padding: 5px 0;
+  font-weight:100;
+  font-size: 10pt;
+  overflow:auto;
+}
+#error-modal span {
+  color:#555;
+}
+.error-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+@-webkit-keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0
+  }
+  to {
+    top: 0;
+    opacity: 1
+  }
+}
+
+@keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0
+  }
+  to {
+    top: 0;
+    opacity: 1
+  }
+}
+
+.error-header {
+  padding: 2px 16px;
+  height: 30px;
+  background-color: rgb(255, 60, 0);
+  color: white;
+  border-top-right-radius: 20px;
+}
+
+.error-body {
+  padding: 2px 16px;
+}
+
+.error-footer {
+  height: 50px;
+  padding: 10px 16px 0 16px;
+  background-color: #999;
+  color: white;
+  display: flex;
+  border-bottom-left-radius: 20px;
+}
+
+#error-ok-btn {
+  height: 30px;
+  width: 50px;
+  display: block;
+  margin-left: auto;
+  float: right;
+}
 
 /*
 * media queries for responsive design
@@ -275,7 +385,7 @@ footer a:hover {
 }
 
 @media screen and (max-width: 700px) {
-  .app-logo{
+  .app-logo {
     display: none;
   }
   .footer-api {
@@ -295,10 +405,10 @@ footer a:hover {
     display: none;
   }
   .main {
-    height: calc( 100vh - 40px);
+    top:80px;
+    height: (100% - 80px);
   }
   #locations-bar {
-    min-width: 240px;
-    height: calc( 100vh - 40px);
+    height: 100%;
   }
 }

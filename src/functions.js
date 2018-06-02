@@ -27,7 +27,7 @@ export const importAllImagesFromFolder = function (r) {
  * @param coord - object, geographic coordinates of a specified object on the map
  * return string
  */
-export const _buildFlickrQueryURL = function (keyword, coord) {""
+export const _buildFlickrQueryURL = function (keyword, coord) {
     let root = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + FLICKR_KEY + "&text=" + keyword;
     let location = "&lat=" + coord.lat + "&lon=" + coord.lng + "&radius=5";
     let accuracy = "&accuracy=16";
@@ -60,25 +60,21 @@ export const _buildFoursquareQueryURL = function (keyword, coord) {
  * return object 
  */
 export const _makeRequest = (url) => {
-
+    let query_root = url.substring(0, url.indexOf("?"));
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url);
         xhr.onload = function () {
+            let response = JSON.parse(xhr.response);
             if (this.status >= 200 && this.status < 300) {
-                resolve(xhr.response);
+                resolve(response );
             } else {
-                reject({
-                    status: this.status,
-                    url: url
+                reject( {
+                    code: this.status,
+                    info: "HTTP request to " + query_root + " returned an error",
+                    extra: JSON.stringify(response)
                 });
             }
-        };
-        xhr.onerror = function () {
-            reject({
-                status: this.status,
-                url: url
-            });
         };
         xhr.send();
     });
@@ -99,16 +95,16 @@ export const _makeURLToFlickrPhoto = (photo) => {
  * @param obj - the response object stored in App.state
  * return string (string to be added as inner HTML to infoWindow content)
  */
-export const _makeFlickrInfoHTML = (flickrResp) => {
+export const _makeFlickrInfoHTML = (flickrRespObj) => {
     let flickrHTML = "";
 
-    let photos = flickrResp && flickrResp.photos ? flickrResp.photos.photo : [];
+    let photos = flickrRespObj && flickrRespObj.photos ? flickrRespObj.photos.photo : [];
     let totalPhotos = photos.length;
     if (totalPhotos > 0) {
-        flickrHTML+= `<hr /><div>`;
+        flickrHTML += `<hr /><div>`;
         flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p>
                        <div>`;
-        photos.forEach( photo => {
+        photos.forEach(photo => {
             let url = _makeURLToFlickrPhoto(photo);
             flickrHTML += `<a href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
         });
@@ -122,7 +118,7 @@ export const _makeFlickrInfoHTML = (flickrResp) => {
  * @param obj - a venue in venues array in the response object stored in App.state
  * return string
  */
-export const _makeURLToFoursquarePage = (venue) => {
+const _makeURLToFoursquarePage = (venue) => {
     let url = `https://foursquare.com/v/${venue.id}`;
     return url;
 }
@@ -131,21 +127,21 @@ export const _makeURLToFoursquarePage = (venue) => {
  * @param obj - the response object stored in App.state
  * return string (string to be added as inner HTML to infoWindow content)
  */
-export const _makeFoursquareInfoHTML = (foursquareResp) => {
+export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
     let foursquareHTML = "";
-    if(foursquareResp.response && foursquareResp.response.venues && foursquareResp.response.venues.length > 0){
-        foursquareHTML+= `<div>`;
-        let venue = foursquareResp.response.venues[0];
+    if (foursquareRespObj.response && foursquareRespObj.response.venues && foursquareRespObj.response.venues.length > 0) {
+        foursquareHTML += `<div>`;
+        let venue = foursquareRespObj.response.venues[0];
         let location = venue.location;
-        if(location){
-            foursquareHTML+= ` <p>${location.address || "---"}</p>`;
-            foursquareHTML+= ` <p>${location.postalCode || "---"} - ${venue.location.city || "---"}</p>`;
-            foursquareHTML+= ` <p>${location.country || "---"}</p>`;
+        if (location) {
+            foursquareHTML += ` <p>${location.address || "---"}</p>`;
+            foursquareHTML += ` <p>${location.postalCode || "---"} - ${venue.location.city || "---"}</p>`;
+            foursquareHTML += ` <p>${location.country || "---"}</p>`;
         }
 		let url = _makeURLToFoursquarePage(venue);
-		foursquareHTML+= `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></div>`;
+        foursquareHTML += `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></div>`;
     }
-    return foursquareHTML ;
+    return foursquareHTML;
 }
 
  /*
@@ -156,8 +152,9 @@ export const _makeFoursquareInfoHTML = (foursquareResp) => {
    */
   export const _generateKey = (location, index) => {
     let key = index.toString();
-    let lat = location.coord.lat.toString(), lng = location.coord.lng.toString();
-    key+= lat.slice (lat.length - 5, lat.length - 1);
-    key+= lng.slice (lng.length - 5, lng.length - 1);
+    let lat = location.coord.lat.toString(),
+        lng = location.coord.lng.toString();
+    key += lat.slice(lat.length - 5, lat.length - 1);
+    key += lng.slice(lng.length - 5, lng.length - 1);
     return key;
   };

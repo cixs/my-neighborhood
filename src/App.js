@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Header from "./Header.js";
+import ErrorModal from "./ErrorModal.js";
 import Map from "./Map.js";
 import Footer from "./Footer.js";
 import LocationsBar from "./LocationsBar.js";
@@ -19,11 +20,14 @@ class App extends Component {
     locations: [],
     filter: "all",
     activeIndex: -1, // index of the active location (the one that was clicked inside the LocationsBar list or as a marker inside the map)
-    infoWindowHTML: `<div">
-    <h3>location</h3>
-    <hr /></div>`,
-    flickrContent: {},
-    foursquareContent: {}
+    infoWindowHTML: "",
+    flickrRespObj: {},
+    foursquareRespObj: {},
+    error: null /*{
+      code: "id",
+      info: "info",
+      extra: "extra"
+    }*/
   };
 
   componentWillMount() {
@@ -82,20 +86,12 @@ class App extends Component {
               // so we have data to fill the infoWindow on google map
               self.createInfoWindowHTML(activeLocation);
             })
-            .catch(function(err) {
-              alert(
-                `There is a problem with your request\nStatus: ${
-                  err.status
-                }\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`
-              );
+            .catch(function(error) {
+              self.setErrorStateOn(error);
             });
         })
-        .catch(function(err) {
-          alert(
-            `There is a problem with your request\nStatus: ${
-              err.status
-            }\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`
-          );
+        .catch(function(error) {
+          self.setErrorStateOn(error);
         });
     }
     this.setState({
@@ -108,13 +104,14 @@ class App extends Component {
    * @param location - object, an element of the locations array
    */
   createInfoWindowHTML = location => {
-    const { flickrContent, foursquareContent } = this.state;
+    const { flickrRespObj, foursquareRespObj } = this.state;
     let infoHTML = `<div">
     <h3>${location.name}</h3>
-    <hr /></div>`;
+    <hr></div>`;
 
-    infoHTML += _makeFoursquareInfoHTML(foursquareContent);
-    infoHTML += _makeFlickrInfoHTML(flickrContent);
+    infoHTML += _makeFoursquareInfoHTML(foursquareRespObj);
+    infoHTML += _makeFlickrInfoHTML(flickrRespObj);
+    infoHTML += `<hr /><button id="marker-remove-btn">Remove from my list</button>`
 
     this.setState({ infoWindowHTML: infoHTML });
   };
@@ -124,39 +121,58 @@ class App extends Component {
    * @param location - object, an element of the locations array
    */
   setFlickrContent = response => {
-    let photos = JSON.parse(response);
-    this.setState({ flickrContent: photos });
+    this.setState({ flickrRespObj: response });
   };
   /*
    * @desc make http request for foursquare and set returned object to this.state
    * @param location - object, an element of the locations array
    */
   setFoursquareContent = response => {
-    let photos = JSON.parse(response);
-    this.setState({ foursquareContent: photos });
+    this.setState({ foursquareRespObj: response  });
+  };
+
+  /*
+   * @desc function to trigger the error state when a request returns error
+   * and consequently display the error modal
+   * @param error - object
+   */
+  setErrorStateOn = error => {
+    this.setState({ error: error });
+  };
+  /*
+   * @desc called when the user click OK button in the ErrorModal
+   * reset the error object in this.state to null
+   */
+  onErrorOK = () => {
+    this.setState({ error: null });
   };
 
   render() {
-    const { locations, filter, activeIndex, infoWindowHTML } = this.state;
+    const state = this.state;
 
     return (
       <div className="app">
-        <LocationsBar
-          locations={locations}
-          filter={filter}
-          activeIndex={activeIndex}
-          setFilter={this.setFilter}
-          setNewActiveIndex={this.setNewActiveIndex}
-        />
+        {state.error && (
+          <ErrorModal error={state.error} onErrorOK={this.onErrorOK} />
+        )}
+
+          <LocationsBar
+            locations={state.locations}
+            filter={state.filter}
+            activeIndex={state.activeIndex}
+            setFilter={this.setFilter}
+            setNewActiveIndex={this.setNewActiveIndex}
+          />
 
         <div id="main">
-        <Header />
+          <Header />
           <Map
-            locations={locations}
-            filter={filter}
-            activeIndex={activeIndex}
-            infoWindowContent={infoWindowHTML}
+            locations={state.locations}
+            filter={state.filter}
+            activeIndex={state.activeIndex}
+            infoWindowContent={state.infoWindowHTML}
             setNewActiveIndex={this.setNewActiveIndex}
+            setError={this.setRequestError}
           />
         </div>
         <Footer />

@@ -132,9 +132,10 @@ class Map extends Component {
    * @return a google.maps.InfoWindow object
    */
   createInfoWindow = google => {
-    const { infoWindowContent } = this.props;
+    const infoHTML = `<div><h3>location name</h3><hr />
+    </div><hr /><button id="marker-remove-btn">Remove from my list</button>`
     let infoWindow = new google.maps.InfoWindow({
-      content: infoWindowContent
+      content: infoHTML
     });
     return infoWindow;
   };
