@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import mapStyles from "./map-styles.js";
-import {importAllImagesFromFolder}  from "./functions.js";
+import { importAllImagesFromFolder } from "./functions.js";
 
 class Map extends Component {
   state = {
@@ -106,7 +106,7 @@ class Map extends Component {
     const images = importAllImagesFromFolder(
       require.context("./markers", false, /\.(png)$/)
     );
-    
+
     locations.forEach((location, index) => {
       if (filter === "all" || filter === location.matter) {
         let marker = new google.maps.Marker({
@@ -116,9 +116,10 @@ class Map extends Component {
           icon: this.iconToSet(images, location)
         });
 
-        marker.addListener("click", function() {
+        google.maps.event.addListener(marker, "click", () => {
           setNewActiveIndex(marker.getAnimation() ? -1 : index);
         });
+
         markers.push(marker);
       }
     });
@@ -172,7 +173,7 @@ class Map extends Component {
         }
       }
     }
-    
+
     if (activeIndex !== prevActiveIndex) {
       // if the active location was changed
       // set/remove animation on markers, close the infoWindow
@@ -193,11 +194,10 @@ class Map extends Component {
     if (prevInfoWindowContent !== infoWindowContent) {
       // if the infoWindow content was changed
       // update the infoWindow
-        infoWindow.setContent(infoWindowContent);
+      infoWindow.setContent(infoWindowContent);
     }
   };
 
-  
   componentDidMount() {
     const google = window.google;
     let map = this.initMap(google);
@@ -220,11 +220,20 @@ class Map extends Component {
     this.updateMap(prevActiveIndex, prevFilter, prevInfoWindowContent);
   }
 
+  componentWillUnmount() {
+    // remove all event listeners
+    const { markers } = this.state;
+    const google = window.google;
+    markers.forEach(marker => {
+      google.maps.event.clearListeners(marker, "click");
+    });
+  }
+
   render() {
     return (
-      <div className="map-container">
+
         <div id="map" />
-      </div>
+
     );
   }
 }
@@ -234,7 +243,8 @@ Map.propTypes = {
   filter: PropTypes.string,
   activeIndex: PropTypes.number,
   setNewActiveIndex: PropTypes.func,
-  infoWindowContent: PropTypes.string
+  infoWindowContent: PropTypes.string,
+  showLocationsBar: PropTypes.bool
 };
 
 export default Map;

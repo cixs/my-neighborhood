@@ -4,10 +4,10 @@ import app_logo from "./img/app-logo.gif";
 
 const AppLogo = props => {
   return (
-    <a className="app-logo" href="a">
-      <img src={app_logo} alt="application logo"/>
-      <h4>My Neighborhoods</h4>
-    </a>
+    <div className="app-logo">
+        <img src={app_logo} alt="application logo" width="50" height="40" />
+        <h4>My Neighborhood</h4>
+    </div>
   );
 };
 

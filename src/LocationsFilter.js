@@ -14,7 +14,7 @@ class LocationsFilter extends Component {
 
   render() {
     return (
-      <div className="locations-filter">
+      <form className="locations-filter">
         <select
           id="filter-select"
           onChange={this.changeFilter}
@@ -27,7 +27,7 @@ class LocationsFilter extends Component {
           <option value="nightlife">Nightlife</option>
           <option value="park">Parks</option>
         </select>
-      </div>
+      </form>
     );
   }
 }

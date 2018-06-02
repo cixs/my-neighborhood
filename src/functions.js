@@ -100,20 +100,20 @@ export const _makeURLToFlickrPhoto = (photo) => {
  * return string (string to be added as inner HTML to infoWindow content)
  */
 export const _makeFlickrInfoHTML = (flickrResp) => {
-    let flickrHTML = `<div className="flickr-info">`;
+    let flickrHTML = "";
 
     let photos = flickrResp && flickrResp.photos ? flickrResp.photos.photo : [];
     let totalPhotos = photos.length;
     if (totalPhotos > 0) {
+        flickrHTML+= `<hr /><div>`;
         flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p>
-                       <div className="flickr-thumbnails-wrapper">`;
+                       <div>`;
         photos.forEach( photo => {
             let url = _makeURLToFlickrPhoto(photo);
-            flickrHTML += `<a target="_blank" className="flickr-thumbnail" href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
+            flickrHTML += `<a href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
         });
-        flickrHTML += `</div>`
+        flickrHTML += `</div></div>`
     }
-    flickrHTML += `</div>`
     return flickrHTML;
 }
 
@@ -132,8 +132,9 @@ export const _makeURLToFoursquarePage = (venue) => {
  * return string (string to be added as inner HTML to infoWindow content)
  */
 export const _makeFoursquareInfoHTML = (foursquareResp) => {
-    let foursquareHTML = `<div className="foursquare-info">`;
+    let foursquareHTML = "";
     if(foursquareResp.response && foursquareResp.response.venues && foursquareResp.response.venues.length > 0){
+        foursquareHTML+= `<div>`;
         let venue = foursquareResp.response.venues[0];
         let location = venue.location;
         if(location){
@@ -142,8 +143,21 @@ export const _makeFoursquareInfoHTML = (foursquareResp) => {
             foursquareHTML+= ` <p>${location.country || "---"}</p>`;
         }
 		let url = _makeURLToFoursquarePage(venue);
-		foursquareHTML+= `<p>See more on <a target="_blank" href=${url}><strong>Foursquare</strong></a></p><hr />`;
+		foursquareHTML+= `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></div>`;
     }
-    foursquareHTML+= `</div>`;
     return foursquareHTML ;
 }
+
+ /*
+   * @desc generate a unique key for every element in locations list
+   * using index and last four digits of the latitude and longitude values
+   * @param object loc - an item in locations array
+   * @return string
+   */
+  export const _generateKey = (location, index) => {
+    let key = index.toString();
+    let lat = location.coord.lat.toString(), lng = location.coord.lng.toString();
+    key+= lat.slice (lat.length - 5, lat.length - 1);
+    key+= lng.slice (lng.length - 5, lng.length - 1);
+    return key;
+  };

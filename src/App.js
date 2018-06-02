@@ -1,56 +1,37 @@
 import React, { Component } from "react";
 import "./App.css";
-import LocationsBar from "./LocationsBar.js";
+import Header from "./Header.js";
 import Map from "./Map.js";
-import AppLogo from "./AppLogo.js";
 import Footer from "./Footer.js";
+import LocationsBar from "./LocationsBar.js";
 import locations from "./locations.js";
 import {
   _buildFlickrQueryURL,
   _buildFoursquareQueryURL,
   _makeRequest,
   _makeFlickrInfoHTML,
-  _makeFoursquareInfoHTML 
+  _makeFoursquareInfoHTML,
+  _generateKey
 } from "./functions.js";
-
 
 class App extends Component {
   state = {
     locations: [],
     filter: "all",
     activeIndex: -1, // index of the active location (the one that was clicked inside the LocationsBar list or as a marker inside the map)
-    infoWindowHTML: `<div classname="infoWindow">
-                            <h4>Name</h4>
-                            <hr />
-                            <p>number, street, city, country</p>
-                            <p>phone: </p>
-                            <p>facebook: </p>
-                            <hr />
-                            <p>foursquare: #photos, #reviews <a href="a">...see more</a></p>
-                            <p>flickr: #photos <a href="a">...see more</a></p>
-                            <p>wikipedia: <a href="a">...see more</a></p>
-                        </div>`,
+    infoWindowHTML: `<div">
+    <h3>location</h3>
+    <hr /></div>`,
     flickrContent: {},
     foursquareContent: {}
   };
 
-  /*
-   * @desc generate a unique key for every element in locations list
-   * using latitude and longitude values
-   * @param object loc - an item in locations array
-   * @return string
-   */
-  generateKey = loc => {
-    let key = (loc.coord.lat.toString() + loc.coord.lng.toString()).replace(
-      /\./g,
-      ""
-    );
-    return key;
-  };
-
   componentWillMount() {
-    locations.forEach(loc => {
-      loc.key = this.generateKey(loc);
+    // all objects in locations array will be mapped to a list element
+    // this will require a unique key value for each one
+    locations.forEach((loc, index) => {
+      loc.key = _generateKey(loc, index);
+      // index & last four digits of lat & last four digits of lng
     });
     this.setState({
       locations
@@ -102,11 +83,19 @@ class App extends Component {
               self.createInfoWindowHTML(activeLocation);
             })
             .catch(function(err) {
-              alert(`There is a problem with your request\nStatus: ${err.status}\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`);
+              alert(
+                `There is a problem with your request\nStatus: ${
+                  err.status
+                }\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`
+              );
             });
         })
         .catch(function(err) {
-            alert(`There is a problem with your request\nStatus: ${err.status}\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`);
+          alert(
+            `There is a problem with your request\nStatus: ${
+              err.status
+            }\nurl: ${err.url.substring(0, err.url.indexOf("?"))}`
+          );
         });
     }
     this.setState({
@@ -123,10 +112,10 @@ class App extends Component {
     let infoHTML = `<div">
     <h3>${location.name}</h3>
     <hr /></div>`;
-    
-    infoHTML+= _makeFoursquareInfoHTML (foursquareContent);
-    infoHTML+= _makeFlickrInfoHTML (flickrContent);
-     
+
+    infoHTML += _makeFoursquareInfoHTML(foursquareContent);
+    infoHTML += _makeFlickrInfoHTML(flickrContent);
+
     this.setState({ infoWindowHTML: infoHTML });
   };
 
@@ -151,28 +140,26 @@ class App extends Component {
     const { locations, filter, activeIndex, infoWindowHTML } = this.state;
 
     return (
-      <div className="app-container">
-        <div className="left-container">
-          <AppLogo />
-          <LocationsBar
-            locations={locations}
-            filter={filter}
-            setFilter={this.setFilter}
-            activeIndex={activeIndex}
-            setNewActiveIndex={this.setNewActiveIndex}
-          />
-        </div>
-        <div className="App">
-          <header className="App-header" />
+      <div className="app">
+        <LocationsBar
+          locations={locations}
+          filter={filter}
+          activeIndex={activeIndex}
+          setFilter={this.setFilter}
+          setNewActiveIndex={this.setNewActiveIndex}
+        />
+
+        <div id="main">
+        <Header />
           <Map
             locations={locations}
             filter={filter}
             activeIndex={activeIndex}
-            setNewActiveIndex={this.setNewActiveIndex}
             infoWindowContent={infoWindowHTML}
+            setNewActiveIndex={this.setNewActiveIndex}
           />
-          <Footer/>
         </div>
+        <Footer />
       </div>
     );
   }

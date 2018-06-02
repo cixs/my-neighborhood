@@ -4,6 +4,8 @@ import LocationsList from "./LocationsList.js";
 import PropTypes from "prop-types";
 
 class LocationsBar extends Component {
+
+
   render() {
     const {
       locations,
@@ -13,7 +15,7 @@ class LocationsBar extends Component {
       setNewActiveIndex
     } = this.props;
     return (
-      <div className="locations-bar">
+      <div id="locations-bar">
         <LocationsFilter setFilter={setFilter} />
         <LocationsList
           locations={locations}

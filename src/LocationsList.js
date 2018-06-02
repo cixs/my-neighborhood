@@ -8,8 +8,7 @@ class LocationsList extends Component {
   render() {
     const { locations, filter, activeIndex, setNewActiveIndex  } = this.props;
     return (
-      <div className="locations-list">
-        <ul>
+        <ul className="locations-list">
           {locations.map((loc, index) => (
             <LocationItem
               key={loc.key}
@@ -21,8 +20,6 @@ class LocationsList extends Component {
             />
           ))}
         </ul>
-      </div>
-      
     );
   }
 }
