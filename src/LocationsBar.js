@@ -4,24 +4,24 @@ import LocationsList from "./LocationsList.js";
 import PropTypes from "prop-types";
 
 class LocationsBar extends Component {
-
-
   render() {
     const {
-      locations,
+      markers,
+      activeMarker,
       filter,
-      activeIndex,
       setFilter,
-      setNewActiveIndex
+      setActiveMarker
     } = this.props;
+
     return (
       <div id="locations-bar">
         <LocationsFilter setFilter={setFilter} />
         <LocationsList
-          locations={locations}
+          markers={markers}
+          activeMarker={activeMarker}
           filter={filter}
-          activeIndex={activeIndex}
-          setNewActiveIndex={setNewActiveIndex}
+          setFilter={setFilter}
+          setActiveMarker={setActiveMarker}
         />
       </div>
     );
@@ -29,10 +29,10 @@ class LocationsBar extends Component {
 }
 
 LocationsBar.propTypes = {
-  locations: PropTypes.array,
+  markers: PropTypes.array,
+  activeMarker: PropTypes.object,
   filter: PropTypes.string,
-  activeIndex: PropTypes.number,
-  setFilter: PropTypes.func.isRequired,
-  setNewActiveIndex: PropTypes.func.isRequired
+  setFilter: PropTypes.func,
+  setActiveMarker: PropTypes.func
 };
 export default LocationsBar;

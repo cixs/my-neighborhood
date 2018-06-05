@@ -1,251 +1,144 @@
 let locations = [{
-    name: "Filarmonica Sibiu",
-    coord: {
-        lat: 45.794361,
-        lng: 24.153760
-     },
-    matter: "art"
-},
-{
-    name: " Teatrul National Radu Stanca Sibiu",
-    coord: {
-        lat: 45.791282,
-        lng: 24.149352
-    },
-    matter: "art"
-},
-{
-    name: "Parcul Cetății",
-    coord: {
-        lat: 45.793631, 
-        lng: 24.152326
-    },
-    matter: "park"
-},
-{
-    name: "Parcul Tineretului",
-    coord: {
-        lat: 45.796465,
-        lng: 24.157892
-    },
-    matter: "park"
-},
-{
-    name: "Benjamin Steakhouse & Bar",
-    coord: {
-        lat: 45.795488,
-        lng: 24.149848
-    },
-    matter: "food & drink"
-},
-{
-    name: "Music Pub",
-    coord: {
-        lat: 45.798583, 
-        lng: 24.151797
-    },
-    matter: "food & drink"
-},
-{
-    name: "Cafe Wien",
-    coord: {
-        lat: 45.797641,
-        lng: 24.149529
-    },
-    matter: "food & drink"
-},
-{
-    name: "Muzeul Brukenthal",
-    coord: {
-        lat: 45.796445,
-        lng: 24.150546
-    },
-    matter: "art"
-},
-{
-    name: "Hotel Continental Forum",
-    coord: {
-        lat: 45.792252, 
-        lng: 24.147923
-    },
-    matter: "accommodation"
-},
-{
-    name: "Restaurant Casa Frieda",
-    coord: {
-        lat: 45.793300, 
-        lng: 24.149205
-    },
-    matter: "accommodation"
-},
-{
-    name: "Cotton Pub",
-    coord: {
-        lat: 45.791619,
-        lng: 24.142890
-    },
-    matter: "food & drink"
-},
-{
-    name: "Cetatea Medievala",
-    coord: {
-        lat: 45.795983, 
-        lng: 24.147910
-    },
-    matter: "food & drink"
-},
-{
-    name: "Mai Coffee Lounge",
-    coord: {
-        lat: 45.786859, 
-        lng: 24.140639
-    },
-    matter: "food & drink"
-},
-{
-    name: "New York",
-    coord: {
-        lat: 45.788978, 
-        lng: 24.144787
-    },
-    matter: "food & drink"
-},
-{
-    name: "Ramada Sibiu",
-    coord: {
-        lat: 45.790876, 
-        lng: 24.147815
-    },
-    matter: "food & drink"
-},
-{
-    name: "Grădina Restaurant Sibiu",
-    coord: {
-        lat: 45.788664, 
-        lng: 24.142507
-    },
-    matter: "food & drink"
-},
-{
-    name: "Parc Astra",
-    coord: {
-        lat: 45.793341, 
-        lng: 24.147503
-    },
-    matter: "park"
-},
-{
-    name: "Hilton Sibiu",
-    coord: {
-        lat: 45.760516, 
-        lng: 24.126875
-    },
-    matter: "accommodation"
-},
-{
-    name: "Hotel Libra",
-    coord: {
-        lat: 45.801470, 
-        lng: 24.168815
-    },
-    matter: "accommodation"
-},
-{
-    name: "Liquid The Club",
-    coord: {
-        lat: 45.787803, 
-        lng: 24.148018
-    },
-    matter: "nightlife"
-},
-{
-    name: "Hard Rock Caffe",
-    coord: {
-        lat: 45.798950, 
-        lng: 24.156992
-    },
-    matter: "nightlife"
-},
-{
-    name: "Rock&Bike Club",
-    coord: {
-        lat: 45.788977, 
-        lng: 24.173980
-    },
-    matter: "nightlife"
-},
-{
-    name: "Troubadour",
-    coord: {
-        lat: 45.790040, 
-        lng: 24.147462
-    },
-    matter: "nightlife"
-},
-{
-    name: "Parcul Sub Arini",
-    coord: {
-        lat: 45.782414,
-        lng: 24.139571
-    },
-    matter: "park"
-},
-{
-    name: "Turnul Gros",
-    coord: {
-        lat: 45.794119,
-        lng: 24.154034
-    },
-    matter: "history"
-},
-{
-    name: "Turnul Olarilor",
-    coord: {
-        lat: 45.793816, 
-        lng: 24.152264
-    },
-    matter: "history"
-},
-{
-    name: "Turnul Dulgherilor",
-    coord: {
-        lat: 45.794337, 
-        lng: 24.153211
-    },
-    matter: "history"
-},
-{
-    name: "Casa Altemberger",
-    coord: {
-        lat: 45.796979,
-        lng: 24.149452
-    },
-    matter: "history"
-},
-{
-    name: "Turnul Sfatului",
-    coord: {
-        lat: 45.797629,
-        lng: 24.152133
-    },
-    matter: "history"
-},
-{
-    name: "Zen Garden Lounge&Club",
-    coord: {
-        lat: 45.790112, 
-        lng: 24.147801
-    },
-    matter: "nightlife"
-},
-{
-    name: "Hotel Ibis",
-    coord: {
-        lat: 45.789916, 
-        lng: 24.148973
-    },
-    matter: "accommodation"
-}
-]
+                name: "Liquid The Club",
+                coord: {
+                    "lat": 45.7878002,
+                    "lng": 24.14801829999999
+                },
+                matter: ["night_club", "point_of_interest", "establishment"]
+            }, {
+                name: "Night Club BLUE MOON",
+                coord: {
+                    "lat": 45.79817860000001,
+                    "lng": 24.143865199999937
+                },
+                matter: ["night_club", "bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Delirio Gay Club Sibiu",
+                coord: {
+                    "lat": 45.77837900000001,
+                    "lng": 24.144618000000037
+                },
+                matter: ["night_club", "point_of_interest", "establishment"]
+            }, {
+                name: "Imperium Pub",
+                coord: {
+                    "lat": 45.7939796,
+                    "lng": 24.149885700000027
+                },
+                matter: ["bar", "night_club", "electronics_store", "home_goods_store", "store", "point_of_interest", "establishment"]
+            }, {
+                name: "N'Bike Rock Club",
+                coord: {
+                    "lat": 45.78897250000001,
+                    "lng": 24.17398179999998
+                },
+                matter: ["bar", "night_club", "electronics_store", "home_goods_store", "store", "point_of_interest", "establishment"]
+            }, {
+                name: "Club Ok",
+                coord: {
+                    "lat": 45.774092,
+                    "lng": 24.169815599999993
+                },
+                matter: ["night_club", "point_of_interest", "establishment"]
+            }, {
+                name: "Anaconda",
+                coord: {
+                    "lat": 45.7842114,
+                    "lng": 24.13395890000004
+                },
+                matter: ["night_club", "bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Club No 6",
+                coord: {
+                    "lat": 45.7770569,
+                    "lng": 24.14606630000003
+                },
+                matter: ["bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Premier The Club",
+                coord: {
+                    "lat": 45.780224,
+                    "lng": 24.15323269999999
+                },
+                matter: ["night_club", "point_of_interest", "establishment"]
+            }, {
+                name: "Club Pizza 77",
+                coord: {
+                    "lat": 45.8001325,
+                    "lng": 24.15376070000002
+                },
+                matter: ["restaurant", "bar", "food", "point_of_interest", "establishment"]
+            }, {
+                name: "Troubadour Club",
+                coord: {
+                    "lat": 45.7900403,
+                    "lng": 24.147462200000064
+                },
+                matter: ["bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Cotton Pub",
+                coord: {
+                    "lat": 45.7916071,
+                    "lng": 24.142892599999982
+                },
+                matter: ["night_club", "bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Chirie Sibiu Florin Propietarul",
+                coord: {
+                    "lat": 45.769208,
+                    "lng": 24.128421000000003
+                },
+                matter: ["night_club", "point_of_interest", "establishment"]
+            }, {
+                name: "Mustang",
+                coord: {
+                    "lat": 45.7843435,
+                    "lng": 24.15710869999998
+                },
+                matter: ["bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Hawks Sports Club",
+                coord: {
+                    "lat": 45.7975349,
+                    "lng": 24.154315600000018
+                },
+                matter: ["point_of_interest", "establishment"]
+            }, {
+                name: "Faust",
+                coord: {
+                    "lat": 45.7983603,
+                    "lng": 24.152034200000003
+                },
+                matter: ["bar", "point_of_interest", "establishment"]
+            }, {
+                name: "Club Sportiv Terrasportika",
+                coord: {
+                    "lat": 45.7846774,
+                    "lng": 24.15411990000007
+                },
+                matter: ["gym", "health", "point_of_interest", "establishment"]
+            }, {
+                name: "KTM Cycling Club Sibiu",
+                coord: {
+                    "lat": 45.788371,
+                    "lng": 24.181186000000025
+                },
+                matter: ["point_of_interest", "establishment"]
+            }, {
+                name: "Only DANCE CLUB Music",
+                coord: {
+                    "lat": 45.78892159999999,
+                    "lng": 24.182910499999934
+                },
+                matter: ["point_of_interest", "establishment"]
+            }, {
+                name: "Temptation Massage",
+                coord: {
+                    "lat": 45.7611049,
+                    "lng": 24.19704039999999
+                },
+                matter: ["night_club", "point_of_interest", "establishment"]
+            }
+        ]
 
-export default locations;
+        export default locations;

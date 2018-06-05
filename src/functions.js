@@ -11,7 +11,7 @@ let FOURSQUARE_SECRET = "1ABVWLFI0FR0OOF1MHA4KMZAVPTUU2DQJXMXCF0ZQBOZ4Y5Y";
  * @param r - object (context)
  * @return - array (images)
  */
-export const importAllImagesFromFolder = function (r) {
+export const _importAllImagesFromFolder = function (r) {
     // markers icon pack from https://templatic.com/directory-resources/
     let images = {};
     r.keys().map((item, index) => {
@@ -27,9 +27,9 @@ export const importAllImagesFromFolder = function (r) {
  * @param coord - object, geographic coordinates of a specified object on the map
  * return string
  */
-export const _buildFlickrQueryURL = function (keyword, coord) {
+export const _buildFlickrQueryURL = function (keyword, position) {
     let root = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + FLICKR_KEY + "&text=" + keyword;
-    let location = "&lat=" + coord.lat + "&lon=" + coord.lng + "&radius=5";
+    let location = "&lat=" + position.lat() + "&lon=" + position.lng() + "&radius=5";
     let accuracy = "&accuracy=16";
     let contentType = "&content_type=1";
     let format = "&format=json&nojsoncallback=1";
@@ -44,9 +44,9 @@ export const _buildFlickrQueryURL = function (keyword, coord) {
  * @param coord - object, geographic coordinates of a specified object on the map
  * return string
  */
-export const _buildFoursquareQueryURL = function (keyword, coord) {
+export const _buildFoursquareQueryURL = function (keyword, position) {
     let root = "https://api.foursquare.com/v2/venues/search?";
-    let location = "ll=" + coord.lat + "," + coord.lng + "&radius=500&llAcc=1000";
+    let location = "ll=" + position.lat()+ "," + position.lng() + "&radius=500&llAcc=1000";
     let oauth_token = "&client_id=" + FOURSQUARE_ID + "&client_secret=" + FOURSQUARE_SECRET;
     let query = "&query=" + keyword;
     let versioning = "&v=20180529"
@@ -59,7 +59,7 @@ export const _buildFoursquareQueryURL = function (keyword, coord) {
  * @param url - string, a query string formatted to meet Flickr API specifications
  * return object 
  */
-export const _makeRequest = (url) => {
+export const _makeRequest = (url, errorHandler) => {
     let query_root = url.substring(0, url.indexOf("?"));
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
@@ -69,7 +69,7 @@ export const _makeRequest = (url) => {
             if (this.status >= 200 && this.status < 300) {
                 resolve(response );
             } else {
-                reject( {
+                errorHandler({
                     code: this.status,
                     info: "HTTP request to " + query_root + " returned an error",
                     extra: JSON.stringify(response)
@@ -101,7 +101,7 @@ export const _makeFlickrInfoHTML = (flickrRespObj) => {
     let photos = flickrRespObj && flickrRespObj.photos ? flickrRespObj.photos.photo : [];
     let totalPhotos = photos.length;
     if (totalPhotos > 0) {
-        flickrHTML += `<hr /><div>`;
+        flickrHTML += `<hr><div>`;
         flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p>
                        <div>`;
         photos.forEach(photo => {
@@ -110,11 +110,15 @@ export const _makeFlickrInfoHTML = (flickrRespObj) => {
         });
         flickrHTML += `</div></div>`
     }
+    else{
+        flickrHTML += `<hr><div><p>Nothing was found on <strong>Flickr</strong></p><div>`;
+    }
+
     return flickrHTML;
 }
 
 /*
- * @desc function to make an url to a photo on Foursquare
+ * @desc function to make an url to a specific venue object on Foursquare
  * @param obj - a venue in venues array in the response object stored in App.state
  * return string
  */
@@ -130,7 +134,7 @@ const _makeURLToFoursquarePage = (venue) => {
 export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
     let foursquareHTML = "";
     if (foursquareRespObj.response && foursquareRespObj.response.venues && foursquareRespObj.response.venues.length > 0) {
-        foursquareHTML += `<div>`;
+        foursquareHTML += `<hr><div>`;
         let venue = foursquareRespObj.response.venues[0];
         let location = venue.location;
         if (location) {
@@ -141,6 +145,9 @@ export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
 		let url = _makeURLToFoursquarePage(venue);
         foursquareHTML += `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></div>`;
     }
+    else{
+        foursquareHTML += `<hr><div><p>Nothing was found on <strong>Foursquare</strong></p><div>`;
+    }
     return foursquareHTML;
 }
 
@@ -150,10 +157,10 @@ export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
    * @param object loc - an item in locations array
    * @return string
    */
-  export const _generateKey = (location, index) => {
+  export const _generateKey = (marker, index) => {
     let key = index.toString();
-    let lat = location.coord.lat.toString(),
-        lng = location.coord.lng.toString();
+    let lat = marker.position.lat().toString(),
+        lng = marker.position.lng().toString();
     key += lat.slice(lat.length - 5, lat.length - 1);
     key += lng.slice(lng.length - 5, lng.length - 1);
     return key;

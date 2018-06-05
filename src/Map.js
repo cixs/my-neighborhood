@@ -1,65 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import mapStyles from "./map-styles.js";
-import { importAllImagesFromFolder } from "./functions.js";
+import locations from "./locations.js";
 
 class Map extends Component {
   state = {
-    markers: [],
+    map: {},
     infoWindow: {},
-    map: {}
-  };
-
-  /*
-   * @desc create Map object
-   * @return - object
-   */
-  initMap = google => {
-    let loc = {
-      lat: 45.7926667,
-      lng: 24.1464086
-    };
-    let map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 15,
-      center: loc,
-      styles: mapStyles["all"],
-      scrollwheel: true
-    });
-    return map;
-  };
-
-  /*
-   * @desc find the icon to be set on a marker depending of its location
-   * @param images - array of images
-   * @param location - object (item in state.locations array )
-   * @return - image object, an item in the images array
-   */
-  iconToSet = (images, location) => {
-    let image;
-    switch (location.matter) {
-      case "accommodation":
-        image = images["hotels.png"];
-        break;
-      case "food & drink":
-        image = images["food.png"];
-        break;
-      case "art":
-        image = images["concerts.png"];
-        break;
-      case "history":
-        image = images["museums.png"];
-        break;
-      case "nightlife":
-        image = images["dance-clubs.png"];
-        break;
-      case "park":
-        image = images["parks.png"];
-        break;
-      default:
-        image = images["marker.png"];
-    }
-
-    return image;
+    searchService: {},
+    searchMarkers: []
   };
 
   /*
@@ -96,156 +45,181 @@ class Map extends Component {
   };
 
   /*
-   * @desc create the array of markers,
-   * @params map - google Map object
-   * @return array
+   * @desc search for places inside the map area based on a search string
+   * @return returns a list of Google place objects
    */
-  createMarkers = (map, google) => {
-    let markers = [];
-    const { locations, filter, setNewActiveIndex } = this.props;
-    const images = importAllImagesFromFolder(
-      require.context("./markers", false, /\.(png)$/)
-    );
+  searchForPlaces = searchQuery => {
+    const google = window.google;
+    const { map, searchService } = this.state;
+    let request = {
+      location: map.getCenter(),
+      radius: 2000,
+      query: searchQuery
+    };
+    let locationsArray = [];
+    let newMarkers = [];
+    let self = this;
 
-    locations.forEach((location, index) => {
-      if (filter === "all" || filter === location.matter) {
-        let marker = new google.maps.Marker({
-          position: location.coord,
-          map: map,
-          title: location.name,
-          icon: this.iconToSet(images, location)
-        });
+    try {
+      const { map, searchService } = self.state;
+      searchService.textSearch(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          results.forEach(result => {
+            let location = {
+              name: result.name,
+              formattedAdress: result.formattedAdress,
+              coord: result.geometry.location,
+              matter: result.types
+            };
+            locationsArray.push(location);
+          });
 
-        google.maps.event.addListener(marker, "click", () => {
-          setNewActiveIndex(marker.getAnimation() ? -1 : index);
-        });
-
-        markers.push(marker);
-      }
-    });
-    return markers;
-  };
-
-  /*
-   * @desc create the InfoWindow,
-   * @params map - google Map object
-   * @return a google.maps.InfoWindow object
-   */
-  createInfoWindow = google => {
-    const infoHTML = `<div><h3>location name</h3><hr />
-    </div><hr /><button id="marker-remove-btn">Remove from my list</button>`
-    let infoWindow = new google.maps.InfoWindow({
-      content: infoHTML
-    });
-    return infoWindow;
+          const { createMarkers } = self.props;
+          newMarkers = createMarkers(locationsArray, map, false);
+        }
+        //        console.log(JSON.stringify(searchResults));
+      });
+      this.setState({ searchMarkers: newMarkers });
+    } catch (error) {
+      const { setErrorStateOn } = this.props;
+      setErrorStateOn({
+        code: "",
+        info: error.message,
+        extra: ""
+      });
+    }
   };
 
   /*
    * @desc show markers by hidding/showing them on the map based on filter criteria,
-   *       show the active location by setting animation on the corresponding marker
-   * @params - previous values of this.state variables
+   * show the active location by setting animation on the corresponding marker
+   * @params - previous props object
    */
-  updateMap = (prevActiveIndex, prevFilter, prevInfoWindowContent) => {
-    const { map, markers, infoWindow } = this.state;
-    const { locations, filter, activeIndex, infoWindowContent } = this.props;
-    const google = window.google;
-
-    if (filter !== prevFilter) {
+  updateFilteredLocations = prevProps => {
+    const { map } = this.props;
+    const { filter, markers } = this.props;
+    if (filter !== prevProps.filter) {
       // if the locations filter was changed
       // hide/show markers
       map.setOptions({
         styles: this.styleToSet(filter)
       });
 
-      for (let i = 0; i < locations.length; i++) {
-        if (filter === "all" || filter === locations[i].matter) {
-          if (!markers[i].getMap()) {
-            markers[i].setMap(map);
-            // if the marker is active and it was previously hidden
-            //  re-establish the animation when is set to be visible
-            if (i === activeIndex) {
-              markers[i].setAnimation(google.maps.Animation.BOUNCE);
-            }
+      for (let i = 0; i < markers.length; i++) {
+        if (filter === "all" || filter === markers[i].matter) {
+          if (!markers[i].getGetVisible()) {
+            markers[i].setVisible(true);
           }
         } else {
-          if (markers[i].getMap()) {
-            markers[i].setMap(null);
+          if (markers[i].getGetVisible()) {
+            markers[i].setVisible(false);
           }
         }
       }
     }
+  };
 
-    if (activeIndex !== prevActiveIndex) {
-      // if the active location was changed
-      // set/remove animation on markers, close the infoWindow
-      // and open it again near the active marker
-      if (prevActiveIndex > -1) {
-        let animated = markers[prevActiveIndex].getAnimation();
-        if (animated) {
-          markers[prevActiveIndex].setAnimation(null);
-          infoWindow.close();
-        }
-      }
-      if (activeIndex > -1) {
-        markers[activeIndex].setAnimation(google.maps.Animation.BOUNCE);
-        infoWindow.open(map, markers[activeIndex]);
-      }
-    }
-
-    if (prevInfoWindowContent !== infoWindowContent) {
+  /*
+   * @desc update the content of infoWindow based on the active location
+   * @params - previous props object
+   */
+  updateInfoWindowContent = prevProps => {
+    const { infoWindow } = this.state;
+    const { infoWindowContent } = this.props;
+    if (this.props.infoWindowContent !== prevProps.infoWindowContent) {
       // if the infoWindow content was changed
       // update the infoWindow
       infoWindow.setContent(infoWindowContent);
     }
   };
+  /*
+   * @desc set animation and open infoWindow for the active MArker
+   * @params - previous props object
+   */
+  updateActiveMarker = prevProps => {
+    const google = window.google;
+    const { infoWindow } = this.state;
+    const { activeMarker, map } = this.props;
+    if (activeMarker) {
+      infoWindow.open(map, activeMarker);
+      activeMarker.setAnimation(google.maps.Animation.BOUNCE);
+    }else{
+      infoWindow.close();
+    }
+    if (prevProps.activeMarker) {
+      prevProps.activeMarker.setAnimation(null);
+  }
+  };
+  /*
+   * @desc start a new locations search  based on the  new query string
+   * and display the search results on the map
+   * @params - previous props object
+   */
+  updateSearchResultMarkers = prevProps => {
+    const { searchQuery } = this.props;
+    if (searchQuery !== prevProps.searchQuery) {
+      this.searchForPlaces(searchQuery);
+    }
+  };
 
   componentDidMount() {
     const google = window.google;
-    let map = this.initMap(google);
-    let markers = this.createMarkers(map, google);
-    let infoWindow = this.createInfoWindow(google);
+    const elem = document.getElementById("map");
+    const map = new google.maps.Map(elem, {
+      zoom: 15,
+      center: {
+        lat: 45.7926667,
+        lng: 24.1464086
+      },
+      styles: mapStyles["all"],
+      scrollwheel: true
+    });
+
+    // if there is no internet connection or we do not have access to Google's API
+    // trying to acces google object properties and methods will produce an error
+    // here it a proper place to handle this error
+
+    const infoHTML = `<div><h3>location name</h3><hr />
+    </div><hr /><button id="marker-remove-btn">Remove from my list</button>`;
+    const infoWindow = new google.maps.InfoWindow({
+      content: infoHTML
+    });
+    const searchService = new google.maps.places.PlacesService(map);
     this.setState({
       map: map,
-      markers: markers,
+      searchService: searchService,
       infoWindow: infoWindow
     });
+
+    const { createMarkers } = this.props;
+    createMarkers(locations, map, true);
   }
 
   componentDidUpdate(prevProps, prevState) {
     // because render function is called first time and once before componentDidMount
-    // calling updateMarkers inside render() will produce an' undefined variable' (google) error
-    // this is why updateMap is called here
-    const prevActiveIndex = prevProps.activeIndex;
-    const prevFilter = prevProps.filter;
-    const prevInfoWindowContent = prevProps.infoWindowContent;
-    this.updateMap(prevActiveIndex, prevFilter, prevInfoWindowContent);
-  }
-
-  componentWillUnmount() {
-    // remove all event listeners
-    const { markers } = this.state;
-    const google = window.google;
-    markers.forEach(marker => {
-      google.maps.event.clearListeners(marker, "click");
-    });
+    // calling the following functions inside render() will produce an' undefined variable' (google) error
+    // this is why they are called here
+    this.updateFilteredLocations(prevProps);
+    this.updateInfoWindowContent(prevProps);
+    this.updateSearchResultMarkers(prevProps);
+    this.updateActiveMarker(prevProps);
   }
 
   render() {
-    return (
-
-        <div id="map" />
-
-    );
+    return <div id="map" />;
   }
 }
 
 Map.propTypes = {
-  locations: PropTypes.array,
+  map: PropTypes.object,
+  createMarkers: PropTypes.func,
+  markers: PropTypes.array,
+  activeAMarker: PropTypes.object,
   filter: PropTypes.string,
-  activeIndex: PropTypes.number,
-  setNewActiveIndex: PropTypes.func,
   infoWindowContent: PropTypes.string,
-  showLocationsBar: PropTypes.bool
+  searchQuery: PropTypes.string,
+  setActiveMarker: PropTypes.func,
+  setErrorStateOn: PropTypes.func
 };
 
 export default Map;

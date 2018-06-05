@@ -7,16 +7,15 @@ class LocationItem extends Component {
   *       call the parent setActiveItem with props.index as parameter
   */
   setActive = () => {
-    const index = this.props.index;
-    const setNewActiveIndex = this.props.setNewActiveIndex ;
-    setNewActiveIndex (index);
+    const { marker, setActiveMarker } = this.props;
+    setActiveMarker(marker);
   };
 
   render() {
-    const { location, visible, active } = this.props;
+    const { marker, active, filtered } = this.props;
     let strClass = "location-item";
 
-    if (!visible) {
+    if (!filtered) {
       strClass += " no-display";
     }
     if (active) {
@@ -24,18 +23,17 @@ class LocationItem extends Component {
     }
     return (
       <li className={strClass} onClick={this.setActive}>
-        {location.name}
+        {marker.title}
       </li>
     );
   }
 }
 
 LocationItem.propTypes = {
-  location: PropTypes.object,
-  visible: PropTypes.bool,
+  marker: PropTypes.object,
   active: PropTypes.bool,
-  index: PropTypes.number.isRequired,
-  setNewActiveIndex: PropTypes.func.isRequired
+  filtered: PropTypes.bool,
+  setActiveMarker: PropTypes.func
 };
 
 export default LocationItem;

@@ -1,34 +1,33 @@
 import React, { Component } from "react";
 import LocationItem from "./LocationItem.js";
 import PropTypes from "prop-types";
+import { _generateKey } from "./functions.js";
 
 class LocationsList extends Component {
-
-
   render() {
-    const { locations, filter, activeIndex, setNewActiveIndex  } = this.props;
+    const { markers, activeMarker, filter, setActiveMarker } = this.props;
     return (
-        <ul className="locations-list">
-          {locations.map((loc, index) => (
-            <LocationItem
-              key={loc.key}
-              location={loc}
-              visible={filter === "all" || filter === loc.matter}
-              index={index}
-              active={index === activeIndex}
-              setNewActiveIndex ={setNewActiveIndex}
-            />
-          ))}
-        </ul>
+      <ul className="locations-list">
+        {markers.map((marker, index) => (
+          <LocationItem
+            key={_generateKey(marker, index)}
+            marker={marker}
+            active={marker === activeMarker}
+            filtered={filter === "all" || filter === marker.matter}
+            setActiveMarker={setActiveMarker}
+          />
+        ))}
+      </ul>
     );
   }
 }
 
 LocationsList.propTypes = {
-  locations: PropTypes.array,
+  markers: PropTypes.array,
+  activeMarker: PropTypes.object,
   filter: PropTypes.string,
-  activeIndex: PropTypes.number,
-  setNewActiveIndex : PropTypes.func.isRequired
+  setFilter: PropTypes.func,
+  setActiveMarker: PropTypes.func
 };
 
 export default LocationsList;

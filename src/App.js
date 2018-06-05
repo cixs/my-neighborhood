@@ -5,42 +5,31 @@ import ErrorModal from "./ErrorModal.js";
 import Map from "./Map.js";
 import Footer from "./Footer.js";
 import LocationsBar from "./LocationsBar.js";
-import locations from "./locations.js";
+import mapStyles from "./map-styles.js";
+import pinkMarker from "./img/pink-marker.png";
+import blueMarker from "./img/blue-marker.png";
 import {
   _buildFlickrQueryURL,
   _buildFoursquareQueryURL,
   _makeRequest,
   _makeFlickrInfoHTML,
-  _makeFoursquareInfoHTML,
-  _generateKey
+  _makeFoursquareInfoHTML
 } from "./functions.js";
 
 class App extends Component {
   state = {
-    locations: [],
+    markers: [],
     filter: "all",
-    activeIndex: -1, // index of the active location (the one that was clicked inside the LocationsBar list or as a marker inside the map)
+    activeMarker: null, // active marker is the one that was clicked
     infoWindowHTML: "",
-    flickrRespObj: {},
-    foursquareRespObj: {},
-    error: null /*{
-      code: "id",
-      info: "info",
-      extra: "extra"
-    }*/
+    searchQuery: "",
+    error: null
+    /*{
+         code: "id",
+         info: "info",
+         extra: "extra"
+       }*/
   };
-
-  componentWillMount() {
-    // all objects in locations array will be mapped to a list element
-    // this will require a unique key value for each one
-    locations.forEach((loc, index) => {
-      loc.key = _generateKey(loc, index);
-      // index & last four digits of lat & last four digits of lng
-    });
-    this.setState({
-      locations
-    });
-  }
 
   /*
    * @desc change the state.filter value based on the chosen filter option in LocationsBar
@@ -53,99 +42,148 @@ class App extends Component {
   };
 
   /*
-   * @desc change the activeIndex value in this.state when the user click a marker or an item in locations list
-   * @param index - the location index in the locations array
+   * @desc change the active marker when the user click a marker or an item in locations list
+   * @param index - the index of the new active location in the locations array (the one that was clicked by the user)
    */
-  setNewActiveIndex = index => {
-    const { locations, activeIndex } = this.state;
-    const newActiveIndex = activeIndex === index ? -1 : index;
+  setActiveMarker = marker => {
+    let infoWindowHTML = "";
+    let self = this;
 
-    const activeLocation = locations[newActiveIndex];
+    infoWindowHTML += `<div"><h3>${marker.title}</h3></div>`;
 
-    if (newActiveIndex > -1) {
-      let self = this;
-      let flickrURL = _buildFlickrQueryURL(
-        activeLocation.name,
-        activeLocation.coord
-      );
-      //make nested http requests
-      _makeRequest(flickrURL)
-        .then(function(resp) {
-          // set the flicker photos in the state variable
-          self.setFlickrContent(resp);
+    let foursquareURL = _buildFoursquareQueryURL(marker.title, marker.position);
+    //make nested http requests
+    _makeRequest(foursquareURL, self.setErrorStateOn)
+      .then(function(resp) {
+        // add some element to the infoWindow according to the response object
+        infoWindowHTML += self.infoWindowFoursquareContent(resp);
 
-          let foursquareURL = _buildFoursquareQueryURL(
-            activeLocation.name,
-            activeLocation.coord
-          );
-          _makeRequest(foursquareURL)
-            .then(function(resp) {
-              // set the foursquare venue in the state variable
-              self.setFoursquareContent(resp);
-              // at this point all requests are completed
-              // so we have data to fill the infoWindow on google map
-              self.createInfoWindowHTML(activeLocation);
-            })
-            .catch(function(error) {
-              self.setErrorStateOn(error);
+        let flickrURL = _buildFlickrQueryURL(marker.title, marker.position);
+        _makeRequest(flickrURL, self.setErrorStateOn)
+          .then(function(resp) {
+            // add some element to the infoWindow according to the response object
+            infoWindowHTML += self.infoWindowFlickrContent(resp);
+            // at this point all requests are completed
+            // so we have data to set this.state with the new values
+            infoWindowHTML += `<hr><button id="info-window-action-btn">...</button>`;
+            const { activeMarker } = self.state;
+            self.setState({
+              activeMarker: marker === activeMarker ? null : marker,
+              infoWindowHTML: infoWindowHTML
             });
-        })
-        .catch(function(error) {
-          self.setErrorStateOn(error);
+          })
+          .catch(function(error) {
+            // handle errors for _makeRequest(flickrURL) callback
+            // http request errors are treated inside the _makeRequest function scope
+            self.setErrorStateOn({
+              code: "",
+              info: error.message,
+              extra: error.stack
+            });
+          });
+      })
+      .catch(function(error) {
+        // handle errors for _makeRequest(foursquareURL) callback
+        self.setErrorStateOn({
+          code: "",
+          info: error.message,
+          extra: error.stack
         });
-    }
-    this.setState({
-      activeIndex: newActiveIndex
-    });
+      });
   };
 
   /*
    * @desc create inner HTML for the infoWindow inside the google map
-   * @param location - object, an element of the locations array
+   * based on http response object from Flickr
+   * @param object - response object from Flickr
+   * @return string - new HTML content to be inserted in infoWindow content
    */
-  createInfoWindowHTML = location => {
-    const { flickrRespObj, foursquareRespObj } = this.state;
-    let infoHTML = `<div">
-    <h3>${location.name}</h3>
-    <hr></div>`;
-
-    infoHTML += _makeFoursquareInfoHTML(foursquareRespObj);
-    infoHTML += _makeFlickrInfoHTML(flickrRespObj);
-    infoHTML += `<hr /><button id="marker-remove-btn">Remove from my list</button>`
-
-    this.setState({ infoWindowHTML: infoHTML });
+  infoWindowFlickrContent = response => {
+    return _makeFlickrInfoHTML(response);
+  };
+  /*
+   * @desc create inner HTML for the infoWindow inside the google map
+   * based on http response object from Flickr and append to the infoWindow existing content
+   * @param object - response object from Flickr
+   * @return string - new HTML content to be inserted in infoWindow content
+   */
+  infoWindowFoursquareContent = response => {
+    return _makeFoursquareInfoHTML(response);
   };
 
   /*
-   * @desc make http request for flickr and set returned object to this.state
-   * @param location - object, an element of the locations array
+   * @desc set a new value to this.state.searchQuery 
+   * @param string - query string to be used by Map component for searching
    */
-  setFlickrContent = response => {
-    this.setState({ flickrRespObj: response });
+  startSearch = query => {
+    this.setState({
+      searchQuery: query
+    });
   };
-  /*
-   * @desc make http request for foursquare and set returned object to this.state
-   * @param location - object, an element of the locations array
-   */
-  setFoursquareContent = response => {
-    this.setState({ foursquareRespObj: response  });
-  };
-
   /*
    * @desc function to trigger the error state when a request returns error
    * and consequently display the error modal
-   * @param error - object
+   * @param error - a defined and non-empty object (if undefined or null, it wont trigger the display attributte of ErrorModal component)
    */
   setErrorStateOn = error => {
-    this.setState({ error: error });
+    this.setState({
+      error: error
+    });
   };
   /*
    * @desc called when the user click OK button in the ErrorModal
    * reset the error object in this.state to null
    */
   onErrorOK = () => {
-    this.setState({ error: null });
+    this.setState({
+      error: null
+    });
   };
+
+  /*
+   * @desc create the array of markers,
+   * @params locations - an array of locations object
+   * @params map - google Map object
+   * @params myList - if true, then these are markers previously selected in the initial list, otherwise they are items in a search results array
+   * @return array
+   */
+  createMarkers = (locations, map, myList) => {
+    const google = window.google;
+    let markers = [];
+
+    locations.forEach(location => {
+      let marker = new google.maps.Marker({
+        title: location.name,
+        position: location.coord,
+        map: map,
+        icon: myList ? pinkMarker : blueMarker
+      });
+
+      marker.types = location.matter;
+      if (myList) {
+        // add a new property '.added' it will be used to know which marker on the map exists or can be added in the sidebar list
+        marker.added = true;
+      }
+
+      google.maps.event.addListener(marker, "click", () => {
+        this.setActiveMarker(marker);
+      });
+      markers.push(marker);
+    });
+
+    if (myList) {
+      this.setState({ markers: markers });
+    }
+  };
+
+  componentWillUnmount() {
+    // remove all event listeners
+    const { markers } = this.state;
+    let google = window.google;
+    markers.forEach(marker => {
+      google.maps.event.clearListeners(marker, "click");
+    });
+  }
 
   render() {
     const state = this.state;
@@ -155,24 +193,26 @@ class App extends Component {
         {state.error && (
           <ErrorModal error={state.error} onErrorOK={this.onErrorOK} />
         )}
-
-          <LocationsBar
-            locations={state.locations}
-            filter={state.filter}
-            activeIndex={state.activeIndex}
-            setFilter={this.setFilter}
-            setNewActiveIndex={this.setNewActiveIndex}
-          />
-
+        <LocationsBar
+          markers={state.markers}
+          activeMarker={state.activeMarker}
+          filter={state.filter}
+          setFilter={this.setFilter}
+          setActiveMarker={this.setActiveMarker}
+        />
         <div id="main">
-          <Header />
+          <Header
+            startSearch={this.startSearch}
+          />
           <Map
-            locations={state.locations}
+            createMarkers={this.createMarkers}
+            markers={state.markers}
+            activeMarker={state.activeMarker}
             filter={state.filter}
-            activeIndex={state.activeIndex}
             infoWindowContent={state.infoWindowHTML}
-            setNewActiveIndex={this.setNewActiveIndex}
-            setError={this.setRequestError}
+            setActiveMarker={this.setActiveMarker}
+            setErrorStateOn={this.setErrorStateOn}
+            searchQuery={state.searchQuery}
           />
         </div>
         <Footer />
