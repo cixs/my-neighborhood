@@ -23,7 +23,7 @@ class LocationItem extends Component {
     }
     return (
       <li className={strClass} onClick={this.setActive}>
-        {marker.title}
+        {marker.name}
       </li>
     );
   }

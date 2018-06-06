@@ -127,8 +127,11 @@ header a:hover {
 #search-button:focus {
   outline: 0;
 }
-
+#search-button:hover {
+  background-color: #b0fde3;
+}
 #locations-bar {
+  display: block;
   float:left;
   height: calc( 100% - 40px);
   min-width: 240px;
@@ -149,7 +152,7 @@ header a:hover {
   padding: 10px 5px 10px 0;
   color: #afafaf;
   cursor: pointer;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #4e4e4e;
   text-align: right;
 }
 
@@ -157,7 +160,7 @@ header a:hover {
   color: #00d9ff;
 }
 .location-item:nth-of-type(1){
-  border-top: 1px solid #999;
+  border-top: 1px solid #4e4e4e;
 }
 .active-location {
   background-color: #555;
@@ -189,26 +192,21 @@ header a:hover {
   margin: 0;
   padding:0;
 }
-.gm-style-iw :nth-child(2) {
+.gm-style-iw fieldset {
   max-height: 200px;
   max-width: 260px;
   overflow: auto;
-  height: auto;
+  border:none;
 }
-
 .gm-style-iw img {
   margin: 5px;
   display: inline-block;
 }
 .gm-style-iw #info-window-action-btn{
-  border: none;
-  background-color: inherit;
   font-size: 12px;
   cursor: pointer;
   float:right;
-  margin-right:0;
-  padding-right:0;
-  color:#f00;
+  color:#00f;
 }
 /*
 * hidden filtered element on location list
@@ -389,6 +387,11 @@ p,span {
 /*
 * media queries for responsive design
 */
+@media screen and (min-width: 481px) {
+  #locations-bar {
+    display: block;
+  }
+}
 
 @media screen and (max-width: 480px) {
   .hamburger-btn {

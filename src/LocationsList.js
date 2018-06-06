@@ -13,7 +13,7 @@ class LocationsList extends Component {
             key={_generateKey(marker, index)}
             marker={marker}
             active={marker === activeMarker}
-            filtered={filter === "all" || filter === marker.matter}
+            filtered={filter === "all" || marker.types.indexOf(filter.replace(/ /g,"_")) > -1}
             setActiveMarker={setActiveMarker}
           />
         ))}

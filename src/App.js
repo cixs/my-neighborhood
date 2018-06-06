@@ -39,6 +39,34 @@ class App extends Component {
     this.setState({
       filter
     });
+
+    const { markers } = this.state;
+  };
+  /*
+   * @desc when a marker is added to the list, append its 'types' values as filter options
+   * but only if they aren't in the options
+   * @param types- the property 'types' of a google marker
+   */
+  appendFilterOptions = types => {
+    let filter = document.getElementById("filter-select");
+    if (filter) {
+      types.forEach(type => {
+        let exist = false;
+        let cleanType = type.replace(/_/g, " ");
+        for (let i = 0; i < filter.options.length; i++) {
+          if (filter.options[i].text === cleanType) {
+            exist = true;
+            break;
+          }
+        }
+        if (!exist) {
+          let option = document.createElement("option");
+          option.value = cleanType;
+          option.innerHTML = cleanType;
+          filter.appendChild(option);
+        }
+      });
+    }
   };
 
   /*
@@ -46,50 +74,63 @@ class App extends Component {
    * @param index - the index of the new active location in the locations array (the one that was clicked by the user)
    */
   setActiveMarker = marker => {
-    let infoWindowHTML = "";
-    let self = this;
-
-    infoWindowHTML += `<div"><h3>${marker.title}</h3></div>`;
-
-    let foursquareURL = _buildFoursquareQueryURL(marker.title, marker.position);
-    //make nested http requests
-    _makeRequest(foursquareURL, self.setErrorStateOn)
-      .then(function(resp) {
-        // add some element to the infoWindow according to the response object
-        infoWindowHTML += self.infoWindowFoursquareContent(resp);
-
-        let flickrURL = _buildFlickrQueryURL(marker.title, marker.position);
-        _makeRequest(flickrURL, self.setErrorStateOn)
-          .then(function(resp) {
-            // add some element to the infoWindow according to the response object
-            infoWindowHTML += self.infoWindowFlickrContent(resp);
-            // at this point all requests are completed
-            // so we have data to set this.state with the new values
-            infoWindowHTML += `<hr><button id="info-window-action-btn">...</button>`;
-            const { activeMarker } = self.state;
-            self.setState({
-              activeMarker: marker === activeMarker ? null : marker,
-              infoWindowHTML: infoWindowHTML
-            });
-          })
-          .catch(function(error) {
-            // handle errors for _makeRequest(flickrURL) callback
-            // http request errors are treated inside the _makeRequest function scope
-            self.setErrorStateOn({
-              code: "",
-              info: error.message,
-              extra: error.stack
-            });
-          });
-      })
-      .catch(function(error) {
-        // handle errors for _makeRequest(foursquareURL) callback
-        self.setErrorStateOn({
-          code: "",
-          info: error.message,
-          extra: error.stack
-        });
+    const { activeMarker } = this.state;
+    if (marker === activeMarker) {
+      // if the actual active marker is not null and it was clicked again
+      // only set the activeMarker to null, then it will remove animation and infoWindow inside the map
+      this.setState({
+        activeMarker: null
       });
+    } else {
+      // another marker vas clicked and should be set as active
+      // it needs to find and fill the infoWindow with new content about the next active marker
+      let infoWindowHTML = "";
+      let self = this;
+
+      infoWindowHTML += `<div><h3>${marker.name}</h3></div>`;
+
+      let foursquareURL = _buildFoursquareQueryURL(
+        marker.name,
+        marker.position
+      );
+      //make nested http requests
+      _makeRequest(foursquareURL, self.setErrorStateOn)
+        .then(function(resp) {
+          // add some element to the infoWindow according to the response object
+          infoWindowHTML += self.infoWindowFoursquareContent(resp);
+
+          let flickrURL = _buildFlickrQueryURL(marker.name, marker.position);
+          _makeRequest(flickrURL, self.setErrorStateOn)
+            .then(function(resp) {
+              // add some element to the infoWindow according to the response object
+              infoWindowHTML += self.infoWindowFlickrContent(resp);
+              // at this point all requests are completed
+              // so we have data to set this.state with the new values
+              infoWindowHTML += `<hr><button id="info-window-action-btn">...</button>`;
+              self.setState({
+                activeMarker: marker,
+                infoWindowHTML: infoWindowHTML
+              });
+            })
+            .catch(function(error) {
+              // handle errors for _makeRequest(flickrURL) callback
+              // http request errors are treated inside the _makeRequest function scope
+              self.setErrorStateOn({
+                code: "",
+                info: error.message,
+                extra: error.stack
+              });
+            });
+        })
+        .catch(function(error) {
+          // handle errors for _makeRequest(foursquareURL) callback
+          self.setErrorStateOn({
+            code: "",
+            info: error.message,
+            extra: error.stack
+          });
+        });
+    }
   };
 
   /*
@@ -153,13 +194,15 @@ class App extends Component {
 
     locations.forEach(location => {
       let marker = new google.maps.Marker({
-        title: location.name,
-        position: location.coord,
+        name: location.name,
+        position: location.position,
+        types: location.types,
         map: map,
         icon: myList ? pinkMarker : blueMarker
       });
 
-      marker.types = location.matter;
+      marker.types = location.types;
+      this.appendFilterOptions(marker.types);
       if (myList) {
         // add a new property '.added' it will be used to know which marker on the map exists or can be added in the sidebar list
         marker.added = true;
@@ -173,7 +216,33 @@ class App extends Component {
 
     if (myList) {
       this.setState({ markers: markers });
-    }
+    } else return markers;
+  };
+
+  /*
+   * @desc add a new marker to the sidebar list
+   * @param marker - google Marker object
+   */
+  addMarkerToList = marker => {
+    let { markers } = this.state;
+    marker.setIcon(pinkMarker);
+    marker.added = true;
+    markers.push(marker);
+    this.appendFilterOptions(marker.types);
+    this.setState({ markers: markers, activeMarker: null });
+  };
+
+  /*
+   * @desc remove an existing marker from the sidebar list
+   * @param marker - google Marker object
+   */
+  removeMarkerFromList = marker => {
+    let { markers } = this.state;
+    marker.setIcon(blueMarker);
+    delete marker.added;
+    let index = markers.indexOf(marker);
+    if (index > -1 && index < markers.length) markers.splice(index, 1);
+    this.setState({ markers: markers, activeMarker: null });
   };
 
   componentWillUnmount() {
@@ -201,12 +270,12 @@ class App extends Component {
           setActiveMarker={this.setActiveMarker}
         />
         <div id="main">
-          <Header
-            startSearch={this.startSearch}
-          />
+          <Header startSearch={this.startSearch} />
           <Map
-            createMarkers={this.createMarkers}
             markers={state.markers}
+            createMarkers={this.createMarkers}
+            addMarkerToList={this.addMarkerToList}
+            removeMarkerFromList={this.removeMarkerFromList}
             activeMarker={state.activeMarker}
             filter={state.filter}
             infoWindowContent={state.infoWindowHTML}

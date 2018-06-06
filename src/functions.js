@@ -102,13 +102,12 @@ export const _makeFlickrInfoHTML = (flickrRespObj) => {
     let totalPhotos = photos.length;
     if (totalPhotos > 0) {
         flickrHTML += `<hr><div>`;
-        flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p>
-                       <div>`;
+        flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p><fieldset>`;
         photos.forEach(photo => {
             let url = _makeURLToFlickrPhoto(photo);
             flickrHTML += `<a href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
         });
-        flickrHTML += `</div></div>`
+        flickrHTML += `</fieldset></div>`
     }
     else{
         flickrHTML += `<hr><div><p>Nothing was found on <strong>Flickr</strong></p><div>`;
@@ -134,16 +133,16 @@ const _makeURLToFoursquarePage = (venue) => {
 export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
     let foursquareHTML = "";
     if (foursquareRespObj.response && foursquareRespObj.response.venues && foursquareRespObj.response.venues.length > 0) {
-        foursquareHTML += `<hr><div>`;
+        foursquareHTML += `<hr><fieldset>`;
         let venue = foursquareRespObj.response.venues[0];
         let location = venue.location;
         if (location) {
-            foursquareHTML += ` <p>${location.address || "---"}</p>`;
-            foursquareHTML += ` <p>${location.postalCode || "---"} - ${venue.location.city || "---"}</p>`;
-            foursquareHTML += ` <p>${location.country || "---"}</p>`;
+            foursquareHTML += `<p>${location.address || "---"}</p>`;
+            foursquareHTML += `<p>${location.postalCode || "---"} - ${venue.location.city || "---"}</p>`;
+            foursquareHTML += `<p>${location.country || "---"}</p>`;
         }
 		let url = _makeURLToFoursquarePage(venue);
-        foursquareHTML += `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></div>`;
+        foursquareHTML += `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></fieldset>`;
     }
     else{
         foursquareHTML += `<hr><div><p>Nothing was found on <strong>Foursquare</strong></p><div>`;
@@ -159,8 +158,8 @@ export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
    */
   export const _generateKey = (marker, index) => {
     let key = index.toString();
-    let lat = marker.position.lat().toString(),
-        lng = marker.position.lng().toString();
+    let lat = marker.position.lat.toString(),
+        lng = marker.position.lng.toString();
     key += lat.slice(lat.length - 5, lat.length - 1);
     key += lng.slice(lng.length - 5, lng.length - 1);
     return key;

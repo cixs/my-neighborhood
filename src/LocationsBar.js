@@ -33,6 +33,5 @@ LocationsBar.propTypes = {
   activeMarker: PropTypes.object,
   filter: PropTypes.string,
   setFilter: PropTypes.func,
-  setActiveMarker: PropTypes.func
 };
 export default LocationsBar;
