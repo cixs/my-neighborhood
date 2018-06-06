@@ -65,16 +65,14 @@ class Search extends Component {
   }
   render() {
     return (
-      <form className="search-form" aria-label="search for locations">
+      <form className="search-form" role="search" aria-label="search for locations">
         <input
           id="search-input"
-          role="searchbox"
-          aria-label="input"
           type="text"
           onChange={this.onChange}
           placeholder="Search..."
         />
-        <button id="search-button" aria-label="search" />
+        <button id="search-button" aria-label="start search" />
       </form>
     );
   }

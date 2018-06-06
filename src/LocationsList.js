@@ -6,7 +6,7 @@ import { _generateKey } from "./functions.js";
 const LocationsList = props => {
 
   return (
-    <ul className="locations-list">
+    <ul className="locations-list" aria-label="list of locations">
       {props.markers.map((marker, index) => (
         <LocationItem
           key={_generateKey(marker, index)}

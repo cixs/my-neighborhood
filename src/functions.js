@@ -105,7 +105,7 @@ export const _makeFlickrInfoHTML = (flickrRespObj) => {
         flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p><fieldset>`;
         photos.forEach(photo => {
             let url = _makeURLToFlickrPhoto(photo);
-            flickrHTML += `<a target="blank" href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
+            flickrHTML += `<a target="blank" href=${url}><img src=${photo.url_s} alt=${photo.title} height="48" width="48"></a>`
         });
         flickrHTML += `</fieldset></div>`
     }

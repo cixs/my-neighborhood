@@ -15,6 +15,7 @@ const LocationsFilter = props => {
       <form className="locations-filter">
         <select
           id="filter-select"
+          aria-label="filter select"
           onChange={this.changeFilter}
         >
           <option value="all">All locations</option>

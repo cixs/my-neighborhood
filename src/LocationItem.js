@@ -21,7 +21,7 @@ const LocationItem = props => {
   }
 
   return (
-    <li className={strClass} onClick={this.setActive}>
+    <li className={strClass} onClick={this.setActive} aria-label="location">
       {props.marker.name}
     </li>
   );

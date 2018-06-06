@@ -36,16 +36,6 @@ header {
   display: flex;
 }
 
-header a {
-  color: #b9b9b9;
-  line-height: 50px;
-  text-decoration: none;
-}
-
-header a:hover {
-  color: #00d9ff;
-}
-
 .app-logo {
   text-align: center;
   width: 100%;
@@ -69,15 +59,17 @@ header a:hover {
 }
 
 .sidebar-switch {
-  width: 50px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   display: inline-block;
   margin: 25px 10px 20px 0;
   position: relative;
   margin-left: 10px;
 }
-
+.sidebar-switch:focus {
+  outline: 2px dotted #c4ecff;
+}
 .search-form {
   height: 80px;
   width: 220px;
@@ -105,6 +97,7 @@ header a:hover {
 
 #search-input:focus {
   outline: 0;
+  background-color: #c4ecff;
 }
 
 #search-button {
@@ -136,6 +129,7 @@ header a:hover {
 
 #search-button:focus {
   outline: 0;
+  background-color: #c4ecff;
 }
 
 #search-button:hover {
@@ -170,11 +164,6 @@ header a:hover {
 .location-item:hover {
   color: #00d9ff;
 }
-
-.location-item:nth-of-type(1) {
-  border-top: 1px solid #4e4e4e;
-}
-
 .active-location {
   background-color: #555;
   color: #00d9ff;
@@ -197,6 +186,7 @@ header a:hover {
 
 #filter-select:focus {
   outline: 0;
+  background-color: #c4ecff;
 }
 
 /*

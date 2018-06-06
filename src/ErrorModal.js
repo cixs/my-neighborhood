@@ -13,7 +13,7 @@ const ErrorModal = props => {
   const { error } = props;
 
   return (
-    <div id="error-modal" className="error-info">
+    <div id="error-modal" aria-label="error popup">
       <div className="error-content">
         <div className="error-header">
           <h4>Something went wrong!</h4>
@@ -44,7 +44,7 @@ const ErrorModal = props => {
           </div>
           <button
             id="error-ok-btn"
-            aria-label="ok"
+            aria-label="dismiss"
             type="submit"
             onClick={this.onOK}
           >

@@ -27,7 +27,7 @@ switchLocationsBar = () => {
 
   render() {
     return (
-      <div className="sidebar-switch">
+      <div tabIndex="0" className="sidebar-switch" role="button">
         <img
           src={sidebar_switch}
           alt="sidebar switch"

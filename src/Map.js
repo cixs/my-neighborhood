@@ -230,7 +230,7 @@ class Map extends Component {
   }
 
   render() {
-    return <div id="map" />;
+    return <div id="map" role="contentinfo"/>;
   }
 }
 

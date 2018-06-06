@@ -7,7 +7,7 @@ const LocationsBar = props => {
 
 
   return (
-    <div id="locations-bar">
+    <div id="locations-bar" role="form">
       <LocationsFilter setFilter={props.setFilter} />
       <LocationsList
         markers={props.markers}
