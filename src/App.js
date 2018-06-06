@@ -5,9 +5,9 @@ import ErrorModal from "./ErrorModal.js";
 import Map from "./Map.js";
 import Footer from "./Footer.js";
 import LocationsBar from "./LocationsBar.js";
-import mapStyles from "./map-styles.js";
-import pinkMarker from "./img/pink-marker.png";
-import blueMarker from "./img/blue-marker.png";
+import pinkMarker from "./img/pink-marker.png";// downloaded from http://www.iconarchive.com/
+import blueMarker from "./img/blue-marker.png";// downloaded from http://www.iconarchive.com/
+
 import {
   _buildFlickrQueryURL,
   _buildFoursquareQueryURL,
@@ -20,7 +20,7 @@ class App extends Component {
   state = {
     markers: [],
     filter: "all",
-    activeMarker: null, // active marker is the one that was clicked
+    activeMarker: null, // active marker is the one that was clicked and is bouncing
     infoWindowHTML: "",
     searchQuery: "",
     error: null
@@ -39,8 +39,6 @@ class App extends Component {
     this.setState({
       filter
     });
-
-    const { markers } = this.state;
   };
   /*
    * @desc when a marker is added to the list, append its 'types' values as filter options
@@ -114,7 +112,6 @@ class App extends Component {
             })
             .catch(function(error) {
               // handle errors for _makeRequest(flickrURL) callback
-              // http request errors are treated inside the _makeRequest function scope
               self.setErrorStateOn({
                 code: "",
                 info: error.message,

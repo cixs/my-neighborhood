@@ -1,18 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-class LocationsFilter extends Component {
+const LocationsFilter = props => {
   /*
   * @desc get the option value of the selected filter option in LocationsBar
   * and call the setFilter function in App component
   */
-  changeFilter = () => {
-    const { setFilter } = this.props;
+  this.changeFilter = () => {
     let filter = document.getElementById("filter-select").value;
-    setFilter(filter);
+    props.setFilter(filter);
   };
 
-  render() {
     return (
       <form className="locations-filter">
         <select
@@ -24,7 +22,6 @@ class LocationsFilter extends Component {
       </form>
     );
   }
-}
 
 LocationsFilter.propTypes = {
   setFilter: PropTypes.func.isRequired

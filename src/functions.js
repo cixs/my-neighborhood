@@ -105,7 +105,7 @@ export const _makeFlickrInfoHTML = (flickrRespObj) => {
         flickrHTML += `<p><strong>Flickr:</strong> ${totalPhotos} photos</p><fieldset>`;
         photos.forEach(photo => {
             let url = _makeURLToFlickrPhoto(photo);
-            flickrHTML += `<a href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
+            flickrHTML += `<a target="blank" href=${url}><img src=${photo.url_s} alt=${photo.title} height="50" width="50"></a>`
         });
         flickrHTML += `</fieldset></div>`
     }
@@ -133,16 +133,17 @@ const _makeURLToFoursquarePage = (venue) => {
 export const _makeFoursquareInfoHTML = (foursquareRespObj) => {
     let foursquareHTML = "";
     if (foursquareRespObj.response && foursquareRespObj.response.venues && foursquareRespObj.response.venues.length > 0) {
-        foursquareHTML += `<hr><fieldset>`;
+
         let venue = foursquareRespObj.response.venues[0];
         let location = venue.location;
         if (location) {
+            foursquareHTML += `<hr><fieldset><p><strong>Address:</strong></p>`;
             foursquareHTML += `<p>${location.address || "---"}</p>`;
             foursquareHTML += `<p>${location.postalCode || "---"} - ${venue.location.city || "---"}</p>`;
             foursquareHTML += `<p>${location.country || "---"}</p>`;
         }
 		let url = _makeURLToFoursquarePage(venue);
-        foursquareHTML += `<p>See more on <a href=${url}><strong>Foursquare</strong></a></p></fieldset>`;
+        foursquareHTML += `<p>See more on <a target="blank" href=${url}><strong>Foursquare</strong></a></p></fieldset>`;
     }
     else{
         foursquareHTML += `<hr><div><p>Nothing was found on <strong>Foursquare</strong></p><div>`;

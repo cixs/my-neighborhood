@@ -1,33 +1,31 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-class LocationItem extends Component {
+const LocationItem = props => {
   /*
   * @desc handler for mouse click on this list item
   *       call the parent setActiveItem with props.index as parameter
   */
-  setActive = () => {
-    const { marker, setActiveMarker } = this.props;
-    setActiveMarker(marker);
-  };
+  this.setActive = () => {
 
-  render() {
-    const { marker, active, filtered } = this.props;
-    let strClass = "location-item";
-
-    if (!filtered) {
-      strClass += " no-display";
-    }
-    if (active) {
-      strClass += " active-location";
-    }
-    return (
-      <li className={strClass} onClick={this.setActive}>
-        {marker.name}
-      </li>
-    );
+    props.setActiveMarker(props.marker);
   }
-}
+
+  let strClass = "location-item";
+
+  if (!props.filtered) {
+    strClass += " no-display";
+  }
+  if (props.active) {
+    strClass += " active-location";
+  }
+
+  return (
+    <li className={strClass} onClick={this.setActive}>
+      {props.marker.name}
+    </li>
+  );
+};
 
 LocationItem.propTypes = {
   marker: PropTypes.object,

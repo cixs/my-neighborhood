@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import mapStyles from "./map-styles.js";
 import locations from "./locations.js";
 
 class Map extends Component {
@@ -14,52 +13,20 @@ class Map extends Component {
   }
 
   /*
-   * @desc find the styles to be set to the map depending on the filter option
-   * @param string (option value of the selected option in LocationsBar filter options )
-   * @return - object, an item in the mapStyles array
-   */
-  styleToSet = filter => {
-    let styles;
-    switch (filter) {
-      case "accommodation":
-        styles = mapStyles["accommodation"];
-        break;
-      case "food & drink":
-        styles = mapStyles["food_and_drink"];
-        break;
-      case "art":
-        styles = mapStyles["art"];
-        break;
-      case "history":
-        styles = mapStyles["history"];
-        break;
-      case "nightlife":
-        styles = mapStyles["nightlife"];
-        break;
-      case "park":
-        styles = mapStyles["park"];
-        break;
-      default:
-        styles = mapStyles["all"];
-    }
-
-    return styles;
-  };
-
-  /*
    * @desc search for places inside the map area based on a search string
    * @return returns a list of Google place objects
    */
   searchForPlaces = searchQuery => {
     let locationsArray = [];
     let self = this;
-    self.infoWindow.close();
+    const { setErrorStateOn } = this.props;
+
+    let request = {
+      location: self.map.getCenter(),
+      radius: 4000,
+      query: searchQuery
+    };
     try {
-      let request = {
-        location: self.map.getCenter(),
-        radius: 4000,
-        query: searchQuery
-      };
       self.searchService.textSearch(request, function(results, status) {
         if (status === self.google.maps.places.PlacesServiceStatus.OK) {
           results.forEach(result => {
@@ -74,14 +41,21 @@ class Map extends Component {
 
           const { createMarkers } = self.props;
           self.searchMarkers = createMarkers(locationsArray, self.map, false);
+        } else {
+          //handle errors inside the async textSearch
+          setErrorStateOn({
+            code: status,
+            info: "Google text search service returned: " + status,
+            extra: results.length + "results"
+          });
         }
       });
     } catch (error) {
-      const { setErrorStateOn } = this.props;
       setErrorStateOn({
         code: "",
         info: error.message,
-        extra: ""
+        extra:
+          "Please check your internet connection and/or Google API access token"
       });
     }
   };
@@ -92,7 +66,7 @@ class Map extends Component {
    * @params - previous props object
    */
   updateFilteredMarkers = prevProps => {
-    const { filter, markers, activeMarker } = this.props;
+    const { filter, markers } = this.props;
 
     if (filter !== prevProps.filter) {
       for (let i = 0; i < markers.length; i++) {
@@ -145,10 +119,10 @@ class Map extends Component {
           // if this marker is in the sidebar lis set the button text "Remove from list"
           // otherwise "Add to list"
           button.innerText = activeMarker.added
-            ? "Remove from list"
-            : "Add to list";
+            ? "Remove from my list"
+            : "Add to my list";
         }
-      }else{
+      } else {
         self.infoWindow.close();
       }
     } else {
@@ -172,14 +146,14 @@ class Map extends Component {
    * @params - previous props object
    */
   updateSearchResultMarkers = prevProps => {
-    const { searchQuery } = this.props;
+    const { searchQuery, activeMarker } = this.props;
 
     if (searchQuery !== prevProps.searchQuery) {
       this.searchMarkers.forEach(marker => {
-        marker.setMap(null);
+        this.removeMarkerFromMap(marker, activeMarker);
       });
       this.searchMarkers = [];
-      this.searchForPlaces(searchQuery);
+      if (searchQuery.length > 0) this.searchForPlaces(searchQuery);
     }
   };
   /*
@@ -201,25 +175,46 @@ class Map extends Component {
     }
   };
 
+  /*
+   * @desc remove a marker from map, if the marker is active, close the info window
+   * @param  marker - marker to be removed
+   * @params activeMarker - active marker
+   */
+  removeMarkerFromMap = (marker, activeMarker) => {
+    const { setActiveMarker } = this.props;
+    if (activeMarker === marker) {
+      setActiveMarker(marker); // simulate a click on the active marker and then the active marker is set to null
+    }
+    marker.setMap(null);
+  };
+
   componentDidMount() {
-    const elem = document.getElementById("map");
-    this.map = new this.google.maps.Map(elem, {
-      zoom: 15,
-      center: {
-        lat: 45.7926667,
-        lng: 24.1464086
-      },
-      styles: mapStyles["all"],
-      scrollwheel: true
-    });
-
-    const infoHTML = `<div><h3>location name</h3><hr />
+    const { setErrorStateOn } = this.props;
+    try {
+      const elem = document.getElementById("map");
+      this.map = new this.google.maps.Map(elem, {
+        zoom: 15,
+        center: {
+          lat: 45.7926667,
+          lng: 24.1464086
+        },
+        scrollwheel: true
+      });
+      const infoHTML = `<div><h3>location name</h3><hr />
     </div><hr /><button id="info-window-action-btn">...</button>`;
-    this.infoWindow = new this.google.maps.InfoWindow({
-      content: infoHTML
-    });
-    this.searchService = new this.google.maps.places.PlacesService(this.map);
-
+      this.infoWindow = new this.google.maps.InfoWindow({
+        content: infoHTML
+      });
+      this.searchService = new this.google.maps.places.PlacesService(this.map);
+    } catch (error) {
+      // handle errors for google object initialisation
+      setErrorStateOn({
+        code: "",
+        info: error.message,
+        extra:
+          "Please check your internet connection and/or Google API access token"
+      });
+    }
     const { createMarkers } = this.props;
     createMarkers(locations, this.map, true);
   }

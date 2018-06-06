@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import hamburger_btn from "./img/hamburger.png";
+import sidebar_switch from "./img/sidebar-switch.png";
+//image from https://www.onlinewebfonts.com/icon/248745
 
-class HamburgerBtn extends Component {
+class SidebarSwitch extends Component {
   state = { showLocationsBar: true };
   /*
    * @desc show/hide left container when the user click on hamburger menu
    */
-  toggleLocationsBar = () => {
+switchLocationsBar = () => {
     const {showLocationsBar} = this.state;
 
     let bar = document.getElementById("locations-bar");
@@ -14,10 +15,10 @@ class HamburgerBtn extends Component {
     if (bar && main) {
       if (showLocationsBar) {
         bar.style.display = "none";
-        main.style.width= "100%"
+        main.style.width= "100%";
       } else {
-        bar.style.display = "inline-block";
-        main.style.width= "calc( 100% - 240px)"
+        bar.style.display = "block";
+        main.style.width= "calc( 100% - 240px)";
       }
     }
    
@@ -26,17 +27,17 @@ class HamburgerBtn extends Component {
 
   render() {
     return (
-      <div className="hamburger-btn">
+      <div className="sidebar-switch">
         <img
-          src={hamburger_btn}
-          alt="hamburger button"
-          height="36"
-          width="36"
-          onClick={this.toggleLocationsBar}
+          src={sidebar_switch}
+          alt="sidebar switch"
+          height="40"
+          width="40"
+          onClick={this.switchLocationsBar}
         />
       </div>
     );
   }
 }
 
-export default HamburgerBtn;
+export default SidebarSwitch;
