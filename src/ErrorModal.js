@@ -55,7 +55,7 @@ const ErrorModal = props => {
 };
 
 ErrorModal.propTypes = {
-  error: PropTypes.object,
-  onErrorOK: PropTypes.func
+  error: PropTypes.object.isRequired,
+  onErrorOK: PropTypes.func.isRequired
 };
 export default ErrorModal;

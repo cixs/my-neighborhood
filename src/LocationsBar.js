@@ -21,9 +21,11 @@ const LocationsBar = props => {
 };
 
 LocationsBar.propTypes = {
-  markers: PropTypes.array,
+  markers: PropTypes.array.isRequired,
   activeMarker: PropTypes.object,
-  filter: PropTypes.string,
-  setFilter: PropTypes.func
+  filter: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired,
+  setActiveMarker: PropTypes.func.isRequired
 };
+
 export default LocationsBar;

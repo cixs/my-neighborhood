@@ -1,22 +1,22 @@
-import React, { Component } from "react";
+import React from "react";
 import SidebarSwitch from "./SidebarSwitch.js";
 import AppLogo from "./AppLogo.js";
 import Search from "./Search.js";
 import PropTypes from "prop-types";
 
-class Header extends Component {
-  render() {
-    const { startSearch, setErrorStateOn } = this.props;
+const Header = (props) =>{
+ 
     return (
       <header>
         <SidebarSwitch />
         <AppLogo />
-        <Search startSearch={startSearch} setErrorStateOn={setErrorStateOn} />
+        <Search startSearch={props.startSearch}/>
       </header>
     );
-  }
+
 }
+
 Header.propTypes = {
-  startSearch: PropTypes.func
+  startSearch: PropTypes.func.isRequired,
 };
 export default Header;

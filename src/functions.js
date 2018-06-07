@@ -77,8 +77,8 @@ export const _makeRequest = (url, errorHandler) => {
         if (response.stat && response.stat === "fail") {
           errorHandler({
             code: response.code,
-            message: "HTTP request to " + query_root + " returned an error",
-            extra: response.message
+            message: "HTTP request to " + query_root + " returned an error: " + response.message,
+            extra: "function.js file, http response, _makeRequest function"
           });
         } else {
           resolve(response);
@@ -86,11 +86,17 @@ export const _makeRequest = (url, errorHandler) => {
       } else {
         errorHandler({
           code: this.status,
-          message: "HTTP request to " + query_root + " returned an error",
-          extra: JSON.stringify(response)
+          message: "HTTP request to " + query_root + " returned an error: " + response.message,
+          extra: "functions.js file, http response, _makeRequest function"
         });
       }
     };
+    
+    xhr.onreadystatechange = function() {//Call a function when the state changes.
+      if(xhr.readyState === 0) {
+          alert(xhr.responseText);
+      }
+    }
     xhr.send();
   });
 };

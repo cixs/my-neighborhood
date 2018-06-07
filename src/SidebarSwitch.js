@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 
-//image from https://www.onlinewebfonts.com/icon/248745
 
 class SidebarSwitch extends Component {
   state = { showLocationsBar: true };
@@ -31,6 +30,7 @@ class SidebarSwitch extends Component {
         tabIndex="0"
         className="sidebar-switch"
         role="button"
+        aria-label="toggle sidebar"
         onClick={this.switchLocationsBar}
       />
     );

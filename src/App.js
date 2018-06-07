@@ -25,9 +25,9 @@ class App extends Component {
     searchQuery: "",
     error: null
     /*{
-         code: "id",
-         info: "info",
-         extra: "extra"
+         code: "",
+         info: "",
+         extra: ""
        }*/
   };
 
@@ -58,6 +58,8 @@ class App extends Component {
           }
         }
         if (!exist) {
+          // at this point we know that the type does not exist in options list
+          // then it will be added
           let option = document.createElement("option");
           option.value = cleanType;
           option.innerHTML = cleanType;
@@ -82,53 +84,60 @@ class App extends Component {
     } else {
       // another marker vas clicked and should be set as active
       // it needs to find and fill the infoWindow with new content about the next active marker
-      let infoWindowHTML = "";
+
+      let infoWindowHTML = `<div><h3>${marker.name}</h3></div>`;
       let self = this;
+      if (navigator.onLine) {
+        let foursquareURL = _buildFoursquareQueryURL(
+          marker.name,
+          marker.position
+        );
+        //make nested http requests
+        _makeRequest(foursquareURL, self.setErrorStateOn)
+          .then(function(resp) {
+            // add some element to the infoWindow according to the response object
+            infoWindowHTML += self.infoWindowFoursquareContent(resp);
 
-      infoWindowHTML += `<div><h3>${marker.name}</h3></div>`;
-
-      let foursquareURL = _buildFoursquareQueryURL(
-        marker.name,
-        marker.position
-      );
-      //make nested http requests
-      _makeRequest(foursquareURL, self.setErrorStateOn)
-        .then(function(resp) {
-          // add some element to the infoWindow according to the response object
-          infoWindowHTML += self.infoWindowFoursquareContent(resp);
-
-          let flickrURL = _buildFlickrQueryURL(marker.name, marker.position);
-          _makeRequest(flickrURL, self.setErrorStateOn)
-            .then(function(resp) {
-              // add some element to the infoWindow according to the response object
-              infoWindowHTML += self.infoWindowFlickrContent(resp);
-              // at this point all requests are completed
-              // so we have data to set this.state with the new values
-              infoWindowHTML += `<hr><button id="info-window-action-btn">...</button>`;
-              self.setState({
-                activeMarker: marker,
-                infoWindowHTML: infoWindowHTML
+            let flickrURL = _buildFlickrQueryURL(marker.name, marker.position);
+            _makeRequest(flickrURL, self.setErrorStateOn)
+              .then(function(resp) {
+                // add some element to the infoWindow according to the response object
+                infoWindowHTML += self.infoWindowFlickrContent(resp);
+                // at this point all requests are completed
+                // so we have data to set this.state with the new values
+                infoWindowHTML += `<hr><button id="info-window-action-btn">...</button>`;
+                self.setState({
+                  activeMarker: marker,
+                  infoWindowHTML: infoWindowHTML
+                });
+              })
+              .catch(function(error) {
+                // handle errors for _makeRequest(flickrURL) callback
+                // http request errors are handled inside the _makeRequest function
+                self.setErrorStateOn({
+                  code: "",
+                  message: error.message,
+                  extra: "App.js file, _makeRequest to Flickr callback"
+                });
               });
-            })
-            .catch(function(error) {
-              // handle errors for _makeRequest(flickrURL) callback
-              // http request errors are handled inside the _makeRequest function
-              self.setErrorStateOn({
-                code: "",
-                message: error.message,
-                extra: error.stack
-              });
+          })
+          .catch(function(error) {
+            // handle errors for _makeRequest(foursquareURL) callback
+            // http request errors are handled inside the _makeRequest function
+            self.setErrorStateOn({
+              code: "",
+              message: error.message,
+              extra: "App.js file, _makeRequest to Foursquare callback"
             });
-        })
-        .catch(function(error) {
-          // handle errors for _makeRequest(foursquareURL) callback
-          // http request errors are handled inside the _makeRequest function
-          self.setErrorStateOn({
-            code: "",
-            message: error.message,
-            extra: error.stack
           });
+      } //if (navigator.onLine)
+      else {
+        infoWindowHTML += `<div><p>No internet conection available</p><p>HTTP requests can not be processed</p></div>`;
+        this.setState({
+          activeMarker: marker,
+          infoWindowHTML: infoWindowHTML
         });
+      }
     }
   };
 
@@ -156,9 +165,18 @@ class App extends Component {
    * @param string - query string to be used by Map component for searching
    */
   startSearch = query => {
-    this.setState({
-      searchQuery: query
-    });
+    if (navigator.onLine) {
+      // because the search will start only if the query string is different than the previous query
+      // do not update the state.searchQuery if there is not internet connection
+      this.setState({
+        searchQuery: query
+      });
+    } else {
+      this.setErrorStateOn({
+        message: "No internet conection available",
+        extra: "Can not access Google's search service"
+      });
+    }
   };
   /*
    * @desc function to trigger the error state when a request returns error
@@ -219,14 +237,19 @@ class App extends Component {
     } catch (error) {
       this.setErrorStateOn({
         message: error.message,
-        extra:
-          "Can not create markers, please check your internet connection and/or Google API key"
+        extra: "App.js file, createMarkers function"
       });
-      if (myList) {
-        this.setState({
-          markers: markers
-        });
-      } else return markers;
+    }
+
+    if (myList) {
+      this.setState({
+        markers: markers
+      });
+    } else {
+      // this function was caaled inside Map component so
+      // the array represents markers resulted from search places
+      // and they will be used there
+      return markers;
     }
   };
 
@@ -273,15 +296,17 @@ class App extends Component {
     } catch (error) {
       this.setErrorStateOn({
         message: error.message,
+        extra: "App.js file, componentWillUnmount function"
       });
     }
-  }
+  };
 
   render() {
     const state = this.state;
 
     return (
       <div className="app">
+        
         {state.error && (
           <ErrorModal error={state.error} onErrorOK={this.onErrorOK} />
         )}

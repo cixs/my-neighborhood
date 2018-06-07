@@ -19,48 +19,49 @@ class Map extends Component {
    * @return returns a list of Google place objects
    */
   searchForPlaces = searchQuery => {
-    let locationsArray = [];
-    let self = this;
     const {
       setErrorStateOn
     } = this.props;
 
     let request = {
-      location: self.map.getCenter(),
+      location: this.map.getCenter(),
       radius: 4000,
       query: searchQuery
     };
-    try {
-      self.searchService.textSearch(request, function (results, status) {
-        if (status === self.google.maps.places.PlacesServiceStatus.OK) {
-          results.forEach(result => {
-            let location = {
-              name: result.name,
-              formattedAdress: result.formattedAdress,
-              position: result.geometry.location,
-              types: result.types
-            };
-            locationsArray.push(location);
-          });
+    let self = this;
 
-          const {
-            createMarkers
-          } = self.props;
-          self.searchMarkers = createMarkers(locationsArray, self.map, false);
-        } else {
-          //handle errors inside the async textSearch
-          setErrorStateOn({
-            code: status,
-            info: "Google text search service returned: " + status,
-            extra: results.length + "results"
-          });
-        }
-      });
+    try {
+        self.searchService.textSearch(request, function (results, status) {
+          if (status === self.google.maps.places.PlacesServiceStatus.OK) {
+            let locationsArray = [];
+            results.forEach(result => {
+              let location = {
+                name: result.name,
+                formattedAdress: result.formattedAdress,
+                position: result.geometry.location,
+                types: result.types
+              };
+              locationsArray.push(location);
+            });
+
+            const {
+              createMarkers
+            } = self.props;
+            self.searchMarkers = createMarkers(locationsArray, self.map, false);
+          } else {
+            //handle request errors
+            setErrorStateOn({
+              code: status,
+              message: "Google text search service returned an error ",
+              extra: "error on Map.js file, searchService.textSearch request"
+            });
+          }
+        });
     } catch (error) {
       setErrorStateOn({
         code: "",
         message: error.message,
-        extra: "Please check your internet connection and/or Google API access token"
+        extra: "Map.js file, searchForPlaces() function"
       });
     }
   };
@@ -118,8 +119,8 @@ class Map extends Component {
     let self = this;
 
     if (activeMarker) {
-      //if it is not null
-      // shwo infoWindow linked to this marker
+      //if active Marker not null
+      // show infoWindow linked to this marker
       activeMarker.setAnimation(self.google.maps.Animation.BOUNCE);
       if (activeMarker.getVisible()) {
         self.infoWindow.open(self.map, activeMarker);
@@ -168,8 +169,9 @@ class Map extends Component {
         this.removeMarkerFromMap(marker, activeMarker);
       });
       this.searchMarkers = [];
-      if (searchQuery.length > 0) this.searchForPlaces(searchQuery);
-    }
+      if(searchQuery.length > 0)
+        this.searchForPlaces(searchQuery);
+      } 
   };
   /*
    * @desc add or remove marker to the sidebar list when the user click the button inside the infoWindo
@@ -234,16 +236,15 @@ class Map extends Component {
     } catch (error) {
       // handle errors for google object initialisation
       setErrorStateOn({
-        code: "",
         message: error.message,
-        extra: "Please check your internet connection and/or Google API access token"
+        extra: "Map.js file, function componentDidMount()"
       });
     }
     const {
       createMarkers
     } = this.props;
     createMarkers(locations, this.map, true);
-  }
+  };
 
   componentDidUpdate = (prevProps, prevState) => {
     // because render function is called first time and once before componentDidMount
@@ -253,7 +254,7 @@ class Map extends Component {
     this.updateSearchResultMarkers(prevProps);
     this.updateInfoWindowContent(prevProps);
     this.updateActiveMarker(prevProps);
-  }
+  };
 
   render() {
     return <div id = "map"
@@ -262,16 +263,16 @@ class Map extends Component {
 }
 
 Map.propTypes = {
-  markers: PropTypes.array,
-  createMarkers: PropTypes.func,
-  addMarker: PropTypes.func,
-  removeMarker: PropTypes.func,
-  activeAMarker: PropTypes.object,
-  filter: PropTypes.string,
-  infoWindowContent: PropTypes.string,
-  searchQuery: PropTypes.string,
-  setActiveMarker: PropTypes.func,
-  setErrorStateOn: PropTypes.func
+  markers: PropTypes.array.isRequired,
+  createMarkers: PropTypes.func.isRequired,
+  addMarkerToList: PropTypes.func.isRequired,
+  removeMarkerFromList: PropTypes.func.isRequired,
+  activeMarker: PropTypes.object,
+  filter: PropTypes.string.isRequired,
+  infoWindowContent: PropTypes.string.isRequired,
+  searchQuery: PropTypes.string.isRequired,
+  setActiveMarker: PropTypes.func.isRequired,
+  setErrorStateOn: PropTypes.func.isRequired
 };
 
 export default Map;
