@@ -1,4 +1,6 @@
-import React, { Component } from "react";
+import React, {
+  Component
+} from "react";
 import PropTypes from "prop-types";
 import locations from "./locations.js";
 
@@ -19,7 +21,9 @@ class Map extends Component {
   searchForPlaces = searchQuery => {
     let locationsArray = [];
     let self = this;
-    const { setErrorStateOn } = this.props;
+    const {
+      setErrorStateOn
+    } = this.props;
 
     let request = {
       location: self.map.getCenter(),
@@ -27,7 +31,7 @@ class Map extends Component {
       query: searchQuery
     };
     try {
-      self.searchService.textSearch(request, function(results, status) {
+      self.searchService.textSearch(request, function (results, status) {
         if (status === self.google.maps.places.PlacesServiceStatus.OK) {
           results.forEach(result => {
             let location = {
@@ -39,7 +43,9 @@ class Map extends Component {
             locationsArray.push(location);
           });
 
-          const { createMarkers } = self.props;
+          const {
+            createMarkers
+          } = self.props;
           self.searchMarkers = createMarkers(locationsArray, self.map, false);
         } else {
           //handle errors inside the async textSearch
@@ -53,9 +59,8 @@ class Map extends Component {
     } catch (error) {
       setErrorStateOn({
         code: "",
-        info: error.message,
-        extra:
-          "Please check your internet connection and/or Google API access token"
+        message: error.message,
+        extra: "Please check your internet connection and/or Google API access token"
       });
     }
   };
@@ -66,19 +71,22 @@ class Map extends Component {
    * @params - previous props object
    */
   updateFilteredMarkers = prevProps => {
-    const { filter, markers } = this.props;
+    const {
+      filter,
+      markers
+    } = this.props;
 
     if (filter !== prevProps.filter) {
       for (let i = 0; i < markers.length; i++) {
         markers[i].setVisible(
           filter === "all" ||
-            markers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
+          markers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
         );
       }
       for (let i = 0; i < this.searchMarkers.length; i++) {
         this.searchMarkers[i].setVisible(
           filter === "all" ||
-            this.searchMarkers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
+          this.searchMarkers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
         );
       }
     }
@@ -89,7 +97,9 @@ class Map extends Component {
    * @params - previous props object
    */
   updateInfoWindowContent = prevProps => {
-    const { infoWindowContent } = this.props;
+    const {
+      infoWindowContent
+    } = this.props;
     if (this.props.infoWindowContent !== prevProps.infoWindowContent) {
       // if the infoWindow content was changed
       // update the infoWindow
@@ -101,7 +111,9 @@ class Map extends Component {
    * @params - previous props object
    */
   updateActiveMarker = prevProps => {
-    const { activeMarker } = this.props;
+    const {
+      activeMarker
+    } = this.props;
 
     let self = this;
 
@@ -113,14 +125,14 @@ class Map extends Component {
         self.infoWindow.open(self.map, activeMarker);
         let button = document.getElementById("info-window-action-btn");
         if (button) {
-          button.addEventListener("click", function() {
+          button.addEventListener("click", function () {
             self.infoWindowAction();
           });
           // if this marker is in the sidebar lis set the button text "Remove from list"
           // otherwise "Add to list"
-          button.innerText = activeMarker.added
-            ? "Remove from my list"
-            : "Add to my list";
+          button.innerText = activeMarker.added ?
+            "Remove from my list" :
+            "Add to my list";
         }
       } else {
         self.infoWindow.close();
@@ -130,7 +142,7 @@ class Map extends Component {
 
       let button = document.getElementById("info-window-action-btn");
       if (button) {
-        button.removeEventListener("click", function() {
+        button.removeEventListener("click", function () {
           self.infoWindowAction();
         });
         self.infoWindow.close();
@@ -146,7 +158,10 @@ class Map extends Component {
    * @params - previous props object
    */
   updateSearchResultMarkers = prevProps => {
-    const { searchQuery, activeMarker } = this.props;
+    const {
+      searchQuery,
+      activeMarker
+    } = this.props;
 
     if (searchQuery !== prevProps.searchQuery) {
       this.searchMarkers.forEach(marker => {
@@ -160,17 +175,23 @@ class Map extends Component {
    * @desc add or remove marker to the sidebar list when the user click the button inside the infoWindo
    */
   infoWindowAction = () => {
-    const { activeMarker, addMarkerToList, removeMarkerFromList } = this.props;
+    const {
+      activeMarker,
+      addMarkerToList,
+      removeMarkerFromList
+    } = this.props;
 
     if (activeMarker) {
       if (activeMarker.hasOwnProperty("added") && activeMarker.added === true) {
         //if the marker has added property, then it is in the sidebar list
         // on this case, the action should be to remove it from the list
         removeMarkerFromList(activeMarker);
+        activeMarker.setAnimation(this.google.maps.Animation.BOUNCE);
       } else {
         // it is not yet in the sidebar list
         // the action should be to add it from the list
         addMarkerToList(activeMarker);
+        activeMarker.setAnimation(this.google.maps.Animation.BOUNCE);
       }
     }
   };
@@ -181,15 +202,19 @@ class Map extends Component {
    * @params activeMarker - active marker
    */
   removeMarkerFromMap = (marker, activeMarker) => {
-    const { setActiveMarker } = this.props;
+    const {
+      setActiveMarker
+    } = this.props;
     if (activeMarker === marker) {
       setActiveMarker(marker); // simulate a click on the active marker and then the active marker is set to null
     }
     marker.setMap(null);
   };
 
-  componentDidMount() {
-    const { setErrorStateOn } = this.props;
+  componentDidMount = () => {
+    const {
+      setErrorStateOn
+    } = this.props;
     try {
       const elem = document.getElementById("map");
       this.map = new this.google.maps.Map(elem, {
@@ -210,16 +235,17 @@ class Map extends Component {
       // handle errors for google object initialisation
       setErrorStateOn({
         code: "",
-        info: error.message,
-        extra:
-          "Please check your internet connection and/or Google API access token"
+        message: error.message,
+        extra: "Please check your internet connection and/or Google API access token"
       });
     }
-    const { createMarkers } = this.props;
+    const {
+      createMarkers
+    } = this.props;
     createMarkers(locations, this.map, true);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate = (prevProps, prevState) => {
     // because render function is called first time and once before componentDidMount
     // calling the following functions inside render() will produce an' undefined variable' (google) error
     // this is why they are called here
@@ -230,7 +256,8 @@ class Map extends Component {
   }
 
   render() {
-    return <div id="map" role="contentinfo"/>;
+    return <div id = "map"
+    role = "contentinfo" / > ;
   }
 }
 

@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { _generateKey } from "./functions.js";
 
 const LocationsList = props => {
-
   return (
     <ul className="locations-list" aria-label="list of locations">
       {props.markers.map((marker, index) => (

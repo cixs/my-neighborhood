@@ -3,14 +3,12 @@ import PropTypes from "prop-types";
 
 const ErrorModal = props => {
   this.onOK = event => {
-    const { onErrorOK } = this.props;
     let errModal = document.getElementById("error-modal");
     if (errModal) {
       errModal.style.display = "none";
-      onErrorOK();
+      props.onErrorOK();
     }
   };
-  const { error } = props;
 
   return (
     <div id="error-modal" aria-label="error popup">
@@ -19,19 +17,19 @@ const ErrorModal = props => {
           <h4>Something went wrong!</h4>
         </div>
         <div className="error-body">
-          {error.id && (
+          {props.error.code && (
             <p>
-              <strong>ID: </strong>
-              <span>{props.error.id}</span>
+              <strong>Error code: </strong>
+              <span>{props.error.code}</span>
             </p>
           )}
-          {error.info && (
+          {props.error.message && (
             <p>
-              <strong>Info: </strong>
-              <span>{props.error.info}</span>
+              <strong>Message: </strong>
+              <span>{props.error.message}</span>
             </p>
           )}
-          {error.extra && (
+          {props.error.extra && (
             <p>
               <strong>Extra: </strong>
               <span>{props.error.extra}</span>

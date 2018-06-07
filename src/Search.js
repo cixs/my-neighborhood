@@ -2,15 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 class Search extends Component {
-
-/*
+  /*
 * @desc start search when the user click on the spyglass
 */
   onMouseClick = event => {
     event.preventDefault();
     this.onStartSearch();
   };
-/*
+  /*
 * start search when enter key was pressed
 */
   onKeyDown = event => {
@@ -20,7 +19,7 @@ class Search extends Component {
       this.onStartSearch();
     }
   };
-/*
+  /*
 * @desc start search when enter key was pressed
 * called by the click and keydown event handlers
 * allthough it is possible to start a search on every change in input element
@@ -31,18 +30,17 @@ class Search extends Component {
     let query = document.getElementById("search-input").value;
     startSearch(query);
   };
-/*
+  /*
 * @desc this function will remove all previous search results
 * but only when the user remove the query string in the imput element
 */
-  onChange = (event) => {
+  onChange = event => {
     const { startSearch } = this.props;
     const query = event.target.value;
-    if(query.length === 0)
-      startSearch("");
+    if (query.length === 0) startSearch("");
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     let button = document.getElementById("search-button");
     if (button) {
       button.addEventListener("click", this.onMouseClick);
@@ -51,9 +49,9 @@ class Search extends Component {
     if (queryInput) {
       button.addEventListener("keydown", this.onKeyDown);
     }
-  }
+  };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     let button = document.getElementById("search-button");
     if (button) {
       button.removeEventListener("click", this.onMouseClick);
@@ -62,10 +60,14 @@ class Search extends Component {
     if (queryInput) {
       button.removeEventListener("keydown", this.onKeyDown);
     }
-  }
+  };
   render() {
     return (
-      <form className="search-form" role="search" aria-label="search for locations">
+      <form
+        className="search-form"
+        role="search"
+        aria-label="search for locations"
+      >
         <input
           id="search-input"
           type="text"

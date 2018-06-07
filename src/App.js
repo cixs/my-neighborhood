@@ -5,8 +5,8 @@ import ErrorModal from "./ErrorModal.js";
 import Map from "./Map.js";
 import Footer from "./Footer.js";
 import LocationsBar from "./LocationsBar.js";
-import pinkMarker from "./img/pink-marker.png";// downloaded from http://www.iconarchive.com/
-import blueMarker from "./img/blue-marker.png";// downloaded from http://www.iconarchive.com/
+import pinkMarker from "./img/pink-marker.png"; // downloaded from http://www.iconarchive.com/
+import blueMarker from "./img/blue-marker.png"; // downloaded from http://www.iconarchive.com/
 
 import {
   _buildFlickrQueryURL,
@@ -112,18 +112,20 @@ class App extends Component {
             })
             .catch(function(error) {
               // handle errors for _makeRequest(flickrURL) callback
+              // http request errors are handled inside the _makeRequest function
               self.setErrorStateOn({
                 code: "",
-                info: error.message,
+                message: error.message,
                 extra: error.stack
               });
             });
         })
         .catch(function(error) {
           // handle errors for _makeRequest(foursquareURL) callback
+          // http request errors are handled inside the _makeRequest function
           self.setErrorStateOn({
             code: "",
-            info: error.message,
+            message: error.message,
             extra: error.stack
           });
         });
@@ -167,9 +169,13 @@ class App extends Component {
     this.setState({
       error: error
     });
+    let button = document.getElementById("error-ok-btn");
+    if (button) {
+      button.focus();
+    }
   };
   /*
-   * @desc called when the user click OK button in the ErrorModal
+   * @desc called when the userpress Enter key or click OK button in the ErrorModal
    * reset the error object in this.state to null
    */
   onErrorOK = () => {
@@ -180,40 +186,48 @@ class App extends Component {
 
   /*
    * @desc create the array of markers,
-   * @params locations - an array of locations object
-   * @params map - google Map object
-   * @params myList - if true, then these are markers previously selected in the initial list, otherwise they are items in a search results array
+   * @param locations - an array of locations object
+   * @param map - google Map object
+   * @param myList - if true, then these are markers previously selected in the initial list, otherwise they are items in a search results array
    * @return array
    */
   createMarkers = (locations, map, myList) => {
     const google = window.google;
     let markers = [];
+    try {
+      locations.forEach(location => {
+        let marker = new google.maps.Marker({
+          name: location.name,
+          position: location.position,
+          types: location.types,
+          map: map,
+          icon: myList ? pinkMarker : blueMarker
+        });
 
-    locations.forEach(location => {
-      let marker = new google.maps.Marker({
-        name: location.name,
-        position: location.position,
-        types: location.types,
-        map: map,
-        icon: myList ? pinkMarker : blueMarker
+        marker.types = location.types;
+        this.appendFilterOptions(marker.types);
+        if (myList) {
+          // add a new property '.added' it will be used to know which marker on the map exists or can be added in the sidebar list
+          marker.added = true;
+        }
+
+        google.maps.event.addListener(marker, "click", () => {
+          this.setActiveMarker(marker);
+        });
+        markers.push(marker);
       });
-
-      marker.types = location.types;
-      this.appendFilterOptions(marker.types);
+    } catch (error) {
+      this.setErrorStateOn({
+        message: error.message,
+        extra:
+          "Can not create markers, please check your internet connection and/or Google API key"
+      });
       if (myList) {
-        // add a new property '.added' it will be used to know which marker on the map exists or can be added in the sidebar list
-        marker.added = true;
-      }
-
-      google.maps.event.addListener(marker, "click", () => {
-        this.setActiveMarker(marker);
-      });
-      markers.push(marker);
-    });
-
-    if (myList) {
-      this.setState({ markers: markers });
-    } else return markers;
+        this.setState({
+          markers: markers
+        });
+      } else return markers;
+    }
   };
 
   /*
@@ -226,7 +240,10 @@ class App extends Component {
     marker.added = true;
     markers.push(marker);
     this.appendFilterOptions(marker.types);
-    this.setState({ markers: markers, activeMarker: null });
+    this.setState({
+      markers: markers,
+      activeMarker: null
+    });
   };
 
   /*
@@ -239,16 +256,25 @@ class App extends Component {
     delete marker.added;
     let index = markers.indexOf(marker);
     if (index > -1 && index < markers.length) markers.splice(index, 1);
-    this.setState({ markers: markers, activeMarker: null });
+    this.setState({
+      markers: markers,
+      activeMarker: null
+    });
   };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     // remove all event listeners
     const { markers } = this.state;
-    let google = window.google;
-    markers.forEach(marker => {
-      google.maps.event.clearListeners(marker, "click");
-    });
+    try {
+      let google = window.google;
+      markers.forEach(marker => {
+        google.maps.event.clearListeners(marker, "click");
+      });
+    } catch (error) {
+      this.setErrorStateOn({
+        message: error.message,
+      });
+    }
   }
 
   render() {

@@ -11,18 +11,18 @@ const LocationsFilter = props => {
     props.setFilter(filter);
   };
 
-    return (
-      <form className="locations-filter">
-        <select
-          id="filter-select"
-          aria-label="filter select"
-          onChange={this.changeFilter}
-        >
-          <option value="all">All locations</option>
-        </select>
-      </form>
-    );
-  }
+  return (
+    <form className="locations-filter">
+      <select
+        id="filter-select"
+        aria-label="filter select"
+        onChange={this.changeFilter}
+      >
+        <option value="all">All locations</option>
+      </select>
+    </form>
+  );
+};
 
 LocationsFilter.propTypes = {
   setFilter: PropTypes.func.isRequired

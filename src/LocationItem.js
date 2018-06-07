@@ -7,9 +7,8 @@ const LocationItem = props => {
   *       call the parent setActiveItem with props.index as parameter
   */
   this.setActive = () => {
-
     props.setActiveMarker(props.marker);
-  }
+  };
 
   let strClass = "location-item";
 

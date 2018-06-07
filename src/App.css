@@ -54,22 +54,32 @@ header {
   margin: 0;
   color: #00d9ff;
   font-family: 'Cormorant Garamond', serif;
-  font-weight:100;
-  font-size:1.2em;
+  font-weight: 100;
+  font-size: 1.2em;
 }
 
 .sidebar-switch {
-  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
   height: 40px;
   cursor: pointer;
   display: inline-block;
   margin: 25px 10px 20px 0;
   position: relative;
   margin-left: 10px;
+  background-image: url(img/sidebar-switch.png);
+  /*original image from https://www.onlinewebfonts.com/icon/248745*/
+  background-size: 100% 100%;
 }
+
 .sidebar-switch:focus {
   outline: 2px dotted #c4ecff;
 }
+
+.sidebar-switch:hover {
+  background-image: url(img/sidebar-switch-hover.png);
+}
+
 .search-form {
   height: 80px;
   width: 220px;
@@ -164,6 +174,7 @@ header {
 .location-item:hover {
   color: #00d9ff;
 }
+
 .active-location {
   background-color: #555;
   color: #00d9ff;
@@ -427,7 +438,6 @@ span {
       text-align: center;
       width: 100%;
     }
-
     @media screen and (min-width: 481px) {
       #locations-bar {
         display: block;
@@ -435,6 +445,7 @@ span {
     }
   }
 }
+
 @media screen and (max-width: 480px) {
   #locations-bar {
     display: none;
