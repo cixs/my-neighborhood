@@ -111,7 +111,7 @@ class App extends Component {
                   infoWindowHTML: infoWindowHTML
                 });
               })
-              .catch(function(error) {
+              .catch(function(error) { // any javaScript error or exception
                 // handle errors for _makeRequest(flickrURL) callback
                 // http request errors are handled inside the _makeRequest function
                 self.setErrorStateOn({
@@ -121,7 +121,7 @@ class App extends Component {
                 });
               });
           })
-          .catch(function(error) {
+          .catch(function(error) { // any javaScript error or exception
             // handle errors for _makeRequest(foursquareURL) callback
             // http request errors are handled inside the _makeRequest function
             self.setErrorStateOn({
@@ -234,7 +234,7 @@ class App extends Component {
         });
         markers.push(marker);
       });
-    } catch (error) {
+    } catch (error) { // any javaScript error or exception
       this.setErrorStateOn({
         message: error.message,
         extra: "App.js file, createMarkers function"
@@ -293,7 +293,7 @@ class App extends Component {
       markers.forEach(marker => {
         google.maps.event.clearListeners(marker, "click");
       });
-    } catch (error) {
+    } catch (error) { // any javaScript error or exception
       this.setErrorStateOn({
         message: error.message,
         extra: "App.js file, componentWillUnmount function"

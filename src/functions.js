@@ -2,21 +2,6 @@ let FLICKR_KEY = "52b5795d19e8e4f2111903fdc90802bb";
 let FOURSQUARE_ID = "KRVCDBSQOP42EGUBR02Q0BCLGKLL54ISEC2X51FV2CY1QMCP";
 let FOURSQUARE_SECRET = "1ABVWLFI0FR0OOF1MHA4KMZAVPTUU2DQJXMXCF0ZQBOZ4Y5Y";
 
-/*
- * from https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
- * @desc import all images from a specific directory
- * @param r - object (context)
- * @return - array (images)
- */
-export const _importAllImagesFromFolder = function(r) {
-  // markers icon pack from https://templatic.com/directory-resources/
-  let images = {};
-  r.keys().map((item, index) => {
-    images[item.replace("./", "")] = r(item);
-    return images[item];
-  });
-  return images;
-};
 
 /*
  * @desc function to make the query string passed as url parameter to a http request
@@ -71,14 +56,14 @@ export const _makeRequest = (url, errorHandler) => {
     xhr.onload = function() {
       let response = JSON.parse(xhr.response);
       if (this.status >= 200 && this.status < 300) {
-        // unlike Foursquare, requsts to Flickr does not return error 400 if there are invalid querry parameters
-        // on this case, the response is a different object than the one expected
+        // requsts to Flickr does not return error 400 if there are invalid querry parameters
+        // on this case, the status is still 200 but only the response object is different
         // so we should check here and and handle the error if exist
         if (response.stat && response.stat === "fail") {
           errorHandler({
             code: response.code,
-            message: "HTTP request to " + query_root + " returned an error: " + response.message,
-            extra: "function.js file, http response, _makeRequest function"
+            message: response.message,
+            extra: "HTTP request to " + query_root + " returned an error"
           });
         } else {
           resolve(response);
@@ -86,8 +71,8 @@ export const _makeRequest = (url, errorHandler) => {
       } else {
         errorHandler({
           code: this.status,
-          message: "HTTP request to " + query_root + " returned an error: " + response.message,
-          extra: "functions.js file, http response, _makeRequest function"
+          message: response.meta.errorDetail,
+          extra: "HTTP request to " + query_root + " returned an error"
         });
       }
     };
@@ -131,7 +116,7 @@ export const _makeFlickrInfoHTML = flickrRespObj => {
       let url = _makeURLToFlickrPhoto(photo);
       flickrHTML += `<a target="blank" href=${url}><img src=${
         photo.url_s
-      } alt=${photo.title} height="48" width="48"></a>`;
+      } alt="flickr image thumbnail" height="48" width="48"></a>`;
     });
     flickrHTML += `</fieldset></div>`;
   } else {

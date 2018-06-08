@@ -1,6 +1,4 @@
-import React, {
-  Component
-} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import locations from "./locations.js";
 
@@ -19,9 +17,7 @@ class Map extends Component {
    * @return returns a list of Google place objects
    */
   searchForPlaces = searchQuery => {
-    const {
-      setErrorStateOn
-    } = this.props;
+    const { setErrorStateOn } = this.props;
 
     let request = {
       location: this.map.getCenter(),
@@ -31,33 +27,31 @@ class Map extends Component {
     let self = this;
 
     try {
-        self.searchService.textSearch(request, function (results, status) {
-          if (status === self.google.maps.places.PlacesServiceStatus.OK) {
-            let locationsArray = [];
-            results.forEach(result => {
-              let location = {
-                name: result.name,
-                formattedAdress: result.formattedAdress,
-                position: result.geometry.location,
-                types: result.types
-              };
-              locationsArray.push(location);
-            });
+      self.searchService.textSearch(request, function(results, status) {
+        if (status === self.google.maps.places.PlacesServiceStatus.OK) {
+          let locationsArray = [];
+          results.forEach(result => {
+            let location = {
+              name: result.name,
+              position: result.geometry.location,
+              types: result.types
+            };
+            locationsArray.push(location);
+          });
 
-            const {
-              createMarkers
-            } = self.props;
-            self.searchMarkers = createMarkers(locationsArray, self.map, false);
-          } else {
-            //handle request errors
-            setErrorStateOn({
-              code: status,
-              message: "Google text search service returned an error ",
-              extra: "error on Map.js file, searchService.textSearch request"
-            });
-          }
-        });
-    } catch (error) {
+          const { createMarkers } = self.props;
+
+          self.searchMarkers = createMarkers(locationsArray, self.map, false);
+        } else {
+          // status is not OK
+          setErrorStateOn({
+            code: status,
+            message: "Google text search service returned an error ",
+            extra: "error on Map.js file, searchService.textSearch request"
+          });
+        }
+      });
+    } catch (error) {// any javaScript error or exception
       setErrorStateOn({
         code: "",
         message: error.message,
@@ -72,22 +66,19 @@ class Map extends Component {
    * @params - previous props object
    */
   updateFilteredMarkers = prevProps => {
-    const {
-      filter,
-      markers
-    } = this.props;
+    const { filter, markers } = this.props;
 
     if (filter !== prevProps.filter) {
       for (let i = 0; i < markers.length; i++) {
         markers[i].setVisible(
           filter === "all" ||
-          markers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
+            markers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
         );
       }
       for (let i = 0; i < this.searchMarkers.length; i++) {
         this.searchMarkers[i].setVisible(
           filter === "all" ||
-          this.searchMarkers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
+            this.searchMarkers[i].types.indexOf(filter.replace(/ /g, "_")) > -1
         );
       }
     }
@@ -98,9 +89,7 @@ class Map extends Component {
    * @params - previous props object
    */
   updateInfoWindowContent = prevProps => {
-    const {
-      infoWindowContent
-    } = this.props;
+    const { infoWindowContent } = this.props;
     if (this.props.infoWindowContent !== prevProps.infoWindowContent) {
       // if the infoWindow content was changed
       // update the infoWindow
@@ -112,9 +101,7 @@ class Map extends Component {
    * @params - previous props object
    */
   updateActiveMarker = prevProps => {
-    const {
-      activeMarker
-    } = this.props;
+    const { activeMarker } = this.props;
 
     let self = this;
 
@@ -126,14 +113,14 @@ class Map extends Component {
         self.infoWindow.open(self.map, activeMarker);
         let button = document.getElementById("info-window-action-btn");
         if (button) {
-          button.addEventListener("click", function () {
+          button.addEventListener("click", function() {
             self.infoWindowAction();
           });
           // if this marker is in the sidebar lis set the button text "Remove from list"
           // otherwise "Add to list"
-          button.innerText = activeMarker.added ?
-            "Remove from my list" :
-            "Add to my list";
+          button.innerText = activeMarker.added
+            ? "Remove from my list"
+            : "Add to my list";
         }
       } else {
         self.infoWindow.close();
@@ -143,7 +130,7 @@ class Map extends Component {
 
       let button = document.getElementById("info-window-action-btn");
       if (button) {
-        button.removeEventListener("click", function () {
+        button.removeEventListener("click", function() {
           self.infoWindowAction();
         });
         self.infoWindow.close();
@@ -159,29 +146,21 @@ class Map extends Component {
    * @params - previous props object
    */
   updateSearchResultMarkers = prevProps => {
-    const {
-      searchQuery,
-      activeMarker
-    } = this.props;
+    const { searchQuery, activeMarker } = this.props;
 
     if (searchQuery !== prevProps.searchQuery) {
       this.searchMarkers.forEach(marker => {
         this.removeMarkerFromMap(marker, activeMarker);
       });
       this.searchMarkers = [];
-      if(searchQuery.length > 0)
-        this.searchForPlaces(searchQuery);
-      } 
+      if (searchQuery.length > 0) this.searchForPlaces(searchQuery);
+    }
   };
   /*
    * @desc add or remove marker to the sidebar list when the user click the button inside the infoWindo
    */
   infoWindowAction = () => {
-    const {
-      activeMarker,
-      addMarkerToList,
-      removeMarkerFromList
-    } = this.props;
+    const { activeMarker, addMarkerToList, removeMarkerFromList } = this.props;
 
     if (activeMarker) {
       if (activeMarker.hasOwnProperty("added") && activeMarker.added === true) {
@@ -204,9 +183,7 @@ class Map extends Component {
    * @params activeMarker - active marker
    */
   removeMarkerFromMap = (marker, activeMarker) => {
-    const {
-      setActiveMarker
-    } = this.props;
+    const { setActiveMarker } = this.props;
     if (activeMarker === marker) {
       setActiveMarker(marker); // simulate a click on the active marker and then the active marker is set to null
     }
@@ -214,9 +191,7 @@ class Map extends Component {
   };
 
   componentDidMount = () => {
-    const {
-      setErrorStateOn
-    } = this.props;
+    const { setErrorStateOn } = this.props;
     try {
       const elem = document.getElementById("map");
       this.map = new this.google.maps.Map(elem, {
@@ -233,16 +208,14 @@ class Map extends Component {
         content: infoHTML
       });
       this.searchService = new this.google.maps.places.PlacesService(this.map);
-    } catch (error) {
-      // handle errors for google object initialisation
+    } catch (error) { 
+      // any javaScript error or exception
       setErrorStateOn({
         message: error.message,
         extra: "Map.js file, function componentDidMount()"
       });
     }
-    const {
-      createMarkers
-    } = this.props;
+    const { createMarkers } = this.props;
     createMarkers(locations, this.map, true);
   };
 
@@ -257,8 +230,7 @@ class Map extends Component {
   };
 
   render() {
-    return <div id = "map"
-    role = "contentinfo" / > ;
+    return <div id="map" role="contentinfo" />;
   }
 }
 
